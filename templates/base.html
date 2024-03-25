@@ -1,0 +1,125 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Student Website</title>
+    <link href = "https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    
+  </head>
+  <style>
+     {%block style%}{%endblock style%}
+     
+  </style>
+ 
+  {% comment %} <body style="background-color: #1b263b;"> {% endcomment %}
+    <body id ='body' >
+      
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="/home">Student Synergy</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="/home/" onclick='timer_run()'>Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/about" onclick='timer_run()'>About Us</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Services
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="/pomodoro/">Pomodoro</a></li>
+                  <li><a class="dropdown-item" href="/timetable/" onclick='timer_run()'>Timetable</a></li>
+                  <li><a class="dropdown-item" href="/tasklist/">Task List</a></li>
+                  <li><a class="dropdown-item" href="/ideas/">Idea Pool</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" href="#">Games</a></li>
+                  <li><a class="dropdown-item" href="#">Exercises</a></li>
+                </ul>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/contact/">Contact us</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/login/">Login/Signup</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/dashboard/">Dashboard</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/chat/">ChatBot</a>
+              </li>
+            </ul>
+
+            <form class="d-flex" role="search">
+              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+              <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+          </div>
+        </div>
+      </nav>
+      <br>
+      <audio id="alarmSound" src="{% static 'js/audio.mp3' %}" preload="auto"></audio>
+       <script src = "{% static 'js/timer.js' %}">  </script>
+       
+       
+      
+      {% comment %} <div class = "parent"> 
+        <div class = "main"> 
+        <h1 >Gemini Chat</h1>
+      <form action="/gemini/" method="post" >
+          {% csrf_token %}
+          <input style:border-radius:20% type="text" name="message" placeholder="Type your message here" required>
+          <button type="submit">Send</button>
+        </form>
+        
+        <form action = "/chat_delete/" method= "post">
+          {% csrf_token %}
+          <button type="submit">Delete All Messages</button>
+
+          </form>
+      </div>
+      {% if response_text %}
+      <div class="chat-history">
+        {% for chat in chat_data %}
+            <div class="message">
+                <p><strong>You:</strong> {{ chat.0 }}</p> <!-- User message -->
+                <p><strong>Gemini:</strong> {{ chat.1 }}</p> <!-- Bot response -->
+            </div>
+        {% endfor %}
+    </div>
+          {% endif %}
+      </div>   {% endcomment %}
+
+      {% comment %} for the rectangle behind text {% endcomment %}
+    {% block body%}
+    {% endblock body%}
+    
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+          const socket = new WebSocket('ws://' + window.location.host + '/ws/notifications/');
+      
+          socket.onmessage = function(e) {
+              const data = JSON.parse(e.data);
+              const message = data['message'];
+              // Display the message in your UI
+              console.log(message);
+          };
+      
+          socket.onclose = function(e) {
+              console.error('Chat socket closed unexpectedly');
+          };
+      });
+      </script>
+      
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+  </body>
+</html>

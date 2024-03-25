@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load static %}
+{% block body %}
+<div class="rectangle"> 
+  <h4 style="text-align: center; color:#e0e1dd; padding: 4px; display: flex; justify-content: center;">Student Synergy aims to help students get control of their day-to-day life by limiting distractions. We ensure that students who voluntarily want to change their lives aren't burdened by the planning of their day.</h4>
+</div>{% endblock body %}
+
+{% block style%}
+  .rectangle {
+    width: 500px;
+    height: 200px; 
+    background-color: #415a77; 
+    border: 2px solid #333; 
+    border-radius: 10px;  
+    box-shadow: 0 0 20px 10px rgba(0,0,0,0.3);
+    position: fixed;left: 520px; top: 300px; 
+  }
+  <audio id="alarmSound" src="{% static 'js/audio.mp3' %}" preload="auto"></audio>
+       <script src = "{% static 'js/timer.js' %}"></script>
+       
+        
+  {% comment %} body{
+    background-color= #1b263b;
+  }; {% endcomment %}
+  <script src = {% static 'js/timer.js' %};>
+    timer_run();
+  </script>
+{% endblock style %}
+

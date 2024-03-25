@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+{% load static %}
+<head>
+  <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+</head>
+<style>
+    {% block style%}
+  body{
+    font-family: 'Poppins';
+  }
+    #timerDisplay {
+        border: 1px solid;
+        padding: 10px;
+        background-color: #f0f0f0;
+        margin-top: 20px;
+        margin-left : auto;
+        color : black;
+        width : 30 px;
+    }
+    body
+{
+    background-color:white;
+    background-position:fixed;
+}
+.container
+{
+  padding:30px;
+  background-color:black;
+  width:100%;
+  text-align:center;
+}
+.container h2
+{
+    margin:0;
+    color:white;
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+    background-attachment:fixed;
+}
+table
+{
+    border-collapse:collapse;
+    width:100%;
+    background-color:#ffffff;
+}
+th,td{
+    border-bottom:1px solid #ddd;
+    padding:8px;
+    text-align:left;
+}
+th{
+    background-color:#2b2d42;
+    color:#ffffff;
+}
+tr:hover
+{
+    background-color:#f2f2f2;
+}
+.btn {
+ position: relative;
+ display: flex;
+ overflow: hidden;
+ cursor: pointer;
+ width: 150px;
+ height: 50px;
+ background-color: #eeeeed;
+ border-radius: 80px;
+ border: none;
+ padding: 0 80px;
+ transition: all .2s ease;
+ justify-content: center;
+ align-items: center;
+}
+
+.btn:hover {
+ transform: scale(1.1);
+}
+
+.btn span {
+ position: absolute;
+ z-index: 99;
+ width: 150px;
+ height: 50px;
+ border-radius: 80px;
+ font-family: 'Poppins';
+ font-weight: 650;
+ font-size: 12px;
+ text-align: center;
+ line-height: 50px;
+ letter-spacing: 2px;
+ color: #eeeeed;
+ background-color: #1f1f1f;
+ padding: 0 10px;
+ transition: all 1.2s ease;
+}
+
+.btn:hover span {
+ opacity: 0;
+}
+
+.btn:hover svg {
+ opacity: 1;
+}
+
+    {%endblock style%}
+
+</style>
+
+ <body>
+    {% block body %}
+    <h2>Time Table Form</h2>
+    <form  method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        
+        
+        <button type="submit" class="btn">
+          <span>Save</span>
+          
+        </button>
+        
+        
+        <script>
+  // Get current date
+  var currentDate = new Date().toISOString().split('T')[0];
+  
+  // Set min attribute to current date
+  document.getElementById('date').min = currentDate;
+</script>
+
+</form>
+<form action="/get/" method="post">
+    {% csrf_token %}
+    <button class="btn" type="submit"><span>Get Timetable</span>
+      </button>
+</form>
+
+
+<form action="/delete_all/" method="post">
+    {% csrf_token %}
+    <button class="btn" type="submit"><span>Delete All</span>
+      </button>
+</form>
+<form action="/return/" method="post">
+    {% csrf_token %}
+    <button  class="btn" type="submit"><span>Return</span>
+      </button>
+</form>
+
+    {# Display the data if it exists #}
+    {% if timetable_data %}
+    <div>
+        <h2>Time Table</h2>
+        <form action="/delete_tasks/" method="post">
+        <table>
+            <thead>
+                <tr>
+                    
+                    <th style="padding:10px">Date</th>
+                    <th style="padding:10px">Day of Week</th>
+                    <th style="padding:10px">Time Slot</th>
+                    <th style="padding:10px">Task/Activity</th>
+                    <th style="padding:10px">Description</th>
+                    <th style="padding:10px">Status</th>
+                    <th style="padding:10px">Recurring</th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in timetable_data %}
+                <tr>
+                    
+                    <td style="padding:10px">{{ entry.date }}</td>
+                    <td style="padding:10px">{{ entry.day_of_week }}</td>
+                    <td style="padding:10px">{{ entry.time_slot }}</td>
+                    <td style="padding:10px">{{ entry.task_activity }}</td>
+                    <td style="padding:10px">{{ entry.description }}</td>
+                    <td style="padding:10px">{{ entry.status }}</td>
+                    <td style="padding:10px">{{ entry.recurring }}</td>
+                    <td><input type="checkbox" name="selected_tasks" value="{{ entry.id }}"></td>
+
+
+                </tr>
+                {% endfor %}
+            </tbody>
+            
+        </table>
+        
+        
+            {% csrf_token %}
+            <button  class="btn" type="submit" name="delete_button" value="delete"><span>Delete Selected Tasks</span>
+              </button>
+            <button  class="btn" type="submit" name="complete_button" value="complete"><span>Mark Selected Tasks as Completed</span>
+              </button>
+        
+        </form>
+        <audio id="alarmSound" src="{% static 'js/audio.mp3' %}" preload="auto"></audio>
+
+        <span id = "fir" style="display:none;" >{{ timetable_data.0.date }}</span>
+        <span id = "scheduledTime" style="display:none;">{{ timetable_data.0.time_slot }}</span>
+        
+    <audio id="alarmSound" src="{% static 'audio.mp3' %}" preload="auto"></audio>
+       <script src = "{% static 'js/timer.js' %}">  </script>
+       
+        <button onclick="playSound()">Play Sound </button>
+      
+       
+    </div>
+    {% endif %}
+  
+    
+
+    
+       
+
+    
+    
+   
+
+{% endblock body %}
+</body>
+</html> 

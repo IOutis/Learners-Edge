@@ -1,0 +1,546 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link href = "https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap" rel="stylesheet">
+
+    <style>
+        
+        body {
+            font-family:'Poppins';
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            background-color: #dbd271;
+            color: black;
+            padding: 10px;
+            text-align: center;
+        }
+        .menu {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+        .menu a {
+            text-decoration: none;
+            color: #333;
+            padding: 10px;
+            border-bottom: 2px solid transparent;
+        }
+        .menu a:hover {
+            border-color: #dbd271;
+        }
+        .content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .card {
+            font-size: 24px;
+            width: 300px;
+            height: 500px;
+            text-align: center;
+            flex: 1 1 300px;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+        .footer {
+            background-color: #dbd271;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        .square1{
+            height: 20px;
+            width: 20px;
+            flex: 1 1 300px;
+            background-color: #d2cdcdd0;
+            padding: 20px;
+            box-shadow: 0 0 18px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            border-radius: 20%;
+            position: fixed;
+            top: 370px;
+            left: 300px;
+        }
+        .square2{
+            height: 20px;
+            width: 20px;
+            flex: 1 1 300px;
+            background-color: #d2cdcdd0;
+            padding: 20px;
+            box-shadow: 0 0 18px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            border-radius: 20%;
+            position: fixed;
+            top: 370px;
+            left: 380px;
+        }
+        .square3{
+            height: 20px;
+            width: 20px;
+            flex: 1 1 300px;
+            background-color: #d2cdcdd0;
+            padding: 20px;
+            box-shadow: 0 0 18px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            border-radius: 20%;
+            position: fixed;
+            top: 370px;
+            left: 460px;
+        }
+        .square4{
+            height: 20px;
+            width: 20px;
+            flex: 1 1 300px;
+            background-color: #d2cdcdd0;
+            padding: 20px;
+            box-shadow: 0 0 18px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            border-radius: 20%;
+            position: fixed;
+            top: 370px;
+            left: 540px;
+        }
+        .square5{
+            height: 20px;
+            width: 20px;
+            flex: 1 1 300px;
+            background-color: #d2cdcdd0;
+            padding: 20px;
+            box-shadow: 0 0 18px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            border-radius: 20%;
+            position: fixed;
+            top: 370px;
+            left: 620px;
+        }
+        .square6{
+            height: 20px;
+            width: 20px;
+            flex: 1 1 300px;
+            background-color: #d2cdcdd0;
+            padding: 20px;
+            box-shadow: 0 0 18px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            border-radius: 20%;
+            position: fixed;
+            top: 370px;
+            left: 700px;
+        }
+        .square7{
+            height: 20px;
+            width: 20px;
+            flex: 1 1 300px;
+            background-color: #d2cdcdd0;
+            padding: 20px;
+            box-shadow: 0 0 18px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            border-radius: 20%;
+            position: fixed;
+            top: 370px;
+            left: 780px;
+        }
+        .square8{
+            height: 20px;
+            width: 20px;
+            flex: 1 1 300px;
+            background-color: #d2cdcdd0;
+            padding: 20px;
+            box-shadow: 0 0 18px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            border-radius: 20%;
+            position: fixed;
+            top: 370px;
+            left: 860px;
+        }
+        .square9{
+            height: 20px;
+            width: 20px;
+            flex: 1 1 300px;
+            background-color: #d2cdcdd0;
+            padding: 20px;
+            box-shadow: 0 0 18px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            border-radius: 20%;
+            position: fixed;
+            top: 370px;
+            left: 940px;
+        }
+        .square10{
+            height: 20px;
+            width: 20px;
+            flex: 1 1 300px;
+            background-color: #d2cdcdd0;
+            padding: 20px;
+            box-shadow: 0 0 18px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            border-radius: 20%;
+            position: fixed;
+            top: 370px;
+            left: 1020px;
+        }
+        .square11{
+            height: 20px;
+            width: 20px;
+            flex: 1 1 300px;
+            background-color: #d2cdcdd0;
+            padding: 20px;
+            box-shadow: 0 0 18px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            border-radius: 20%;
+            position: fixed;
+            top: 450px;
+            left: 300px;
+        }
+        .square12{
+            height: 20px;
+            width: 20px;
+            flex: 1 1 300px;
+            background-color: #d2cdcdd0;
+            padding: 20px;
+            box-shadow: 0 0 18px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            border-radius: 20%;
+            position: fixed;
+            top: 450px;
+            left: 380px;
+        }
+        .square13{
+            height: 20px;
+            width: 20px;
+            flex: 1 1 300px;
+            background-color: #d2cdcdd0;
+            padding: 20px;
+            box-shadow: 0 0 18px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            border-radius: 20%;
+            position: fixed;
+            top: 450px;
+            left: 460px;
+        }
+        .square14{
+            height: 20px;
+            width: 20px;
+            flex: 1 1 300px;
+            background-color: #d2cdcdd0;
+            padding: 20px;
+            box-shadow: 0 0 18px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            border-radius: 20%;
+            position: fixed;
+            top: 450px;
+            left: 540px;
+        }
+        .square15{
+            height: 20px;
+            width: 20px;
+            flex: 1 1 300px;
+            background-color: #d2cdcdd0;
+            padding: 20px;
+            box-shadow: 0 0 18px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            border-radius: 20%;
+            position: fixed;
+            top: 450px;
+            left: 620px;
+        }
+        .square16{
+            height: 20px;
+            width: 20px;
+            flex: 1 1 300px;
+            background-color: #d2cdcdd0;
+            padding: 20px;
+            box-shadow: 0 0 18px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            border-radius: 20%;
+            position: fixed;
+            top: 450px;
+            left: 700px;
+        }
+        .square17{
+            height: 20px;
+            width: 20px;
+            flex: 1 1 300px;
+            background-color: #d2cdcdd0;
+            padding: 20px;
+            box-shadow: 0 0 18px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            border-radius: 20%;
+            position: fixed;
+            top: 450px;
+            left: 780px;
+        }
+        .square18{
+            height: 20px;
+            width: 20px;
+            flex: 1 1 300px;
+            background-color: #d2cdcdd0;
+            padding: 20px;
+            box-shadow: 0 0 18px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            border-radius: 20%;
+            position: fixed;
+            top: 450px;
+            left: 860px;
+        }
+        .square19{
+            height: 20px;
+            width: 20px;
+            flex: 1 1 300px;
+            background-color: #d2cdcdd0;
+            padding: 20px;
+            box-shadow: 0 0 18px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            border-radius: 20%;
+            position: fixed;
+            top: 450px;
+            left: 940px;
+        }
+        .square20{
+            height: 20px;
+            width: 20px;
+            flex: 1 1 300px;
+            background-color: #d2cdcdd0;
+            padding: 20px;
+            box-shadow: 0 0 18px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            border-radius: 20%;
+            position: fixed;
+            top: 450px;
+            left: 1020px;
+        }
+        .square21{
+            height: 20px;
+            width: 20px;
+            flex: 1 1 300px;
+            background-color: #d2cdcdd0;
+            padding: 20px;
+            box-shadow: 0 0 18px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            border-radius: 20%;
+            position: fixed;
+            top: 530px;
+            left: 300px;
+        }
+        .square22{
+            height: 20px;
+            width: 20px;
+            flex: 1 1 300px;
+            background-color: #d2cdcdd0;
+            padding: 20px;
+            box-shadow: 0 0 18px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            border-radius: 20%;
+            position: fixed;
+            top: 530px;
+            left: 380px;
+        }
+        .square23{
+            height: 20px;
+            width: 20px;
+            flex: 1 1 300px;
+            background-color: #d2cdcdd0;
+            padding: 20px;
+            box-shadow: 0 0 18px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            border-radius: 20%;
+            position: fixed;
+            top: 530px;
+            left: 460px;
+        }
+        .square24{
+            height: 20px;
+            width: 20px;
+            flex: 1 1 300px;
+            background-color: #d2cdcdd0;
+            padding: 20px;
+            box-shadow: 0 0 18px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            border-radius: 20%;
+            position: fixed;
+            top: 530px;
+            left: 540px;
+        }
+        .square25{
+            height: 20px;
+            width: 20px;
+            flex: 1 1 300px;
+            background-color: #d2cdcdd0;
+            padding: 20px;
+            box-shadow: 0 0 18px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            border-radius: 20%;
+            position: fixed;
+            top: 530px;
+            left: 620px;
+        }
+        .square26{
+            height: 20px;
+            width: 20px;
+            flex: 1 1 300px;
+            background-color: #d2cdcdd0;
+            padding: 20px;
+            box-shadow: 0 0 18px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            border-radius: 20%;
+            position: fixed;
+            top: 530px;
+            left: 700px;
+        }
+        .square27{
+            height: 20px;
+            width: 20px;
+            flex: 1 1 300px;
+            background-color: #d2cdcdd0;
+            padding: 20px;
+            box-shadow: 0 0 18px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            border-radius: 20%;
+            position: fixed;
+            top: 530px;
+            left: 780px;
+        }
+        .square28{
+            height: 20px;
+            width: 20px;
+            flex: 1 1 300px;
+            background-color: #d2cdcdd0;
+            padding: 20px;
+            box-shadow: 0 0 18px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            border-radius: 20%;
+            position: fixed;
+            top: 530px;
+            left: 860px;
+        }
+        .square29{
+            height: 20px;
+            width: 20px;
+            flex: 1 1 300px;
+            background-color: #d2cdcdd0;
+            padding: 20px;
+            box-shadow: 0 0 18px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            border-radius: 20%;
+            position: fixed;
+            top: 530px;
+            left: 940px;
+        }
+        .square30{
+            height: 20px;
+            width: 20px;
+            flex: 1 1 300px;
+            background-color: #d2cdcdd0;
+            padding: 20px;
+            box-shadow: 0 0 18px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            border-radius: 20%;
+            position: fixed;
+            top: 530px;
+            left: 1020px;
+        }
+        .square1:hover,.square2:hover,.square3:hover,.square4:hover,.square5:hover,.square6:hover,.square7:hover,.square8:hover,.square9:hover,.square10:hover,.square11:hover,.square12:hover,.square13:hover,.square14:hover,.square15:hover,.square16:hover,.square17:hover,.square18:hover,.square19:hover,.square20:hover,.square21:hover,.square22:hover,.square23:hover,.square24:hover,.square25:hover,.square26:hover,.square27:hover,.square28:hover,.square29:hover,.square30:hover{
+        transform: scale(1.3); 
+        position: absolute;
+        background-image: -moz-linear-gradient();
+        font-weight: 200;
+        opacity: 2; 
+        padding: auto;
+        padding-left: 20px;
+        padding-right: 20px;
+        color: aliceblue;
+        z-index: 1;
+        box-shadow: 0px 0px 30px  rgb(37, 36, 36);
+        }
+
+
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1>Dashboard</h1>
+        </div>
+        <div class="menu">
+            
+        </div>
+        <div class="content">
+            <div class="card">
+                <h2>Your Progress</h2>
+                <p style="font-size:20px;position: fixed;top:300px;left:300px"><b>Previous 30 Days</b></p>
+                <span class="square1" onclick="handleSquareClick(1)"></span>
+                <span class="square2" onclick="handleSquareClick(2)"></span>
+                <span class="square3" onclick="handleSquareClick(3)"></span>
+                <span class="square4" onclick="handleSquareClick(4)"></span>
+                <span class="square5" onclick="handleSquareClick(5)"></span>
+                <span class="square6" onclick="handleSquareClick(6)"></span>
+                <span class="square7" onclick="handleSquareClick(7)"></span>
+                <span class="square8" onclick="handleSquareClick(8)"></span>
+                <span class="square9" onclick="handleSquareClick(9)"></span>
+                <span class="square10" onclick="handleSquareClick(10)"></span>
+                <span class="square11" onclick="handleSquareClick(11)"></span>
+                <span class="square12" onclick="handleSquareClick(12)"></span>
+                <span class="square13" onclick="handleSquareClick(13)"></span>
+                <span class="square14" onclick="handleSquareClick(14)"></span>
+                <span class="square15" onclick="handleSquareClick(15)"></span>
+                <span class="square16" onclick="handleSquareClick(16)"></span>
+                <span class="square17" onclick="handleSquareClick(17)"></span>
+                <span class="square18" onclick="handleSquareClick(18)"></span>
+                <span class="square19" onclick="handleSquareClick(19)"></span>
+                <span class="square20" onclick="handleSquareClick(20)"></span>
+                <span class="square21" onclick="handleSquareClick(21)"></span>
+                <span class="square22" onclick="handleSquareClick(22)"></span>
+                <span class="square23" onclick="handleSquareClick(23)"></span>
+                <span class="square24" onclick="handleSquareClick(24)"></span>
+                <span class="square25" onclick="handleSquareClick(25)"></span>
+                <span class="square26" onclick="handleSquareClick(26)"></span>
+                <span class="square27" onclick="handleSquareClick(27)"></span>
+                <span class="square28" onclick="handleSquareClick(28)"></span>
+                <span class="square29" onclick="handleSquareClick(29)"></span>
+                <span class="square30" onclick="handleSquareClick(30)"></span>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+    </div>
+    <script>
+        // Define a function to handle square click
+        function handleSquareClick(squareNumber) {
+            // Display a message indicating which square was clicked
+            alert("Square " + squareNumber + " clicked!");
+            var square = document.querySelector('.square' + squareNumber);
+            // Change the background color to red
+            if (square.style.backgroundColor === 'red') {
+            // If it is red, change it to the original color (assuming it was white)
+            square.style.backgroundColor = '#d2cdcdd0'; // Change this to the original color
+        } else {
+            // If it is not red, change it to red
+            square.style.backgroundColor = 'red';
+        }
+
+        }
+    </script>
+
+</body>
+</html>

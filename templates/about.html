@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% load static %}
+<html>
+    <head>
+
+    </head>
+    <style>
+        {% block style  %}
+    body{
+        font-family:'Poppins';
+    }
+    .container{
+    height:120px;
+    width:100%;
+    padding:40px 20px;
+    border-radius:2px;
+    border-width:5px;
+    border-style:double;
+    border-color:grey:aliceblue;
+    text-align:center;
+    text-transform:uppercase;
+    color:white;
+    background-color:black ;
+    text-decoration:solid;
+    font-family:"Poppins";
+    margin:2px 2px 2px 2px black;
+}
+.x
+{
+    color:blue;
+    background-color:#8d99ae;
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    padding:10px;
+}
+.y
+{
+    background-color:black;
+    color:white;
+    padding:20px;
+    border:1px soild white;
+}
+p{
+    font-size:20px;
+    font-family:"poppins";
+    padding-right:10%;
+}
+{% endblock style %}
+    </style>
+    <body>
+        {% block body %}
+        <link rel="stylesheet" href="z.css">
+        <div class="container">
+            <h1>Objectives</h1>
+        </div>
+        <div class="x">
+        <div class="y">
+            <h1>Pomodoro Technique Integration</h1>
+            <p>Utilizing AI to manage study sessions effectively, enhancing focus and productivity.
+                Eisenhower Matrix for Task Management: Helping students prioritize their tasks and manage their time more efficiently.
+                </p>
+        </div>
+        <div class="y">
+            <h1>Dynamic Time Table</h1>
+            <p>Allowing students to create and manage their daily schedules, with the option to integrate with external calendars or APIs like Gemini for visualized learning.
+                Brain-Activating Games and Exercises: Incorporating AI-generated games and exercises to stimulate cognitive development and engagement.
+                </p>
+        </div>
+        <div class="y">
+            <h1>AI Generated Courses with Quiz</h1>
+            <p>Providing personalized learning paths based on students' knowledge levels, with quizzes to reinforce learning.
+            </p>
+        </div>
+        <div class="y">
+        <h1>Mind Mapping and Digital Notes</h1>
+        <p> Offering tools for creating and managing study notes, with the option to generate images for visual representation.
+        </p>
+        </div>
+        <div class="y">
+            <h1>Personalized Learning paths</h1>
+            <p> Using image recognition to analyze students' knowledge levels and generate personalized learning roadmaps.
+            </p>
+        </div>
+        <div class="y">
+            <h1>Mental Health Assessment and support</h1>
+            <p>ncluding features for mental health measurement and providing resources and support based on students' needs.
+            </p>
+        </div>
+        <div class="y">
+            <h1>AI chatbot for learning support</h1>
+            <p> Offering a chatbot for immediate learning support and guidance.
+            </p>
+        </div>
+        <div class="y">
+            
+        </div>
+        {% endblock body %}
+    </body>
+</html>
