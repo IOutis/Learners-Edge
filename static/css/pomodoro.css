@@ -1,0 +1,35 @@
+body {
+    font-family: 'Poppins';
+    text-align: center;
+}
+#timer {
+    font-size: 48px;
+    margin-top: 50px;
+}
+#controls {
+    margin-top: 20px;
+}
+#Pomodoro_div{
+    margin-left: 20vw;
+    margin-right:20vw;
+    background-color: white;
+    box-shadow: 10px 10px 10px 10px  rgba(0,0,0,.3);
+    padding: 20px;
+    border-radius: 10px;
+    display: inline-block;
+    vertical-align: top;
+    align-items: center;
+    text-align: center;
+    width: fit-content;
+    height: fit-content;
+    
+}
+
+@media only screen and (max-width: 768px) {
+    /* For mobile phones: */
+    [class*="col-"] {
+      width: 100%;
+    }
+  }
+
+

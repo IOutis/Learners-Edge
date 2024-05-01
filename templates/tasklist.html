@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {% block body %}
+        <form action="/task/" method = "post">
+            {% csrf_token %}
+            Enter tasks one after other <br> format: <br> 1. Study<br> 2. Assignment submission .... <br>: <input type="textarea" name="task" id="tasks" >
+            <button type="submit">Submit Tasks</button>
+        </form>
+    {% endblock body %}
+    
+</body>
+</html>

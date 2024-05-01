@@ -2,6 +2,7 @@
 <!doctype html>
 <html lang="en">
   <head>
+    {%block head%}{%endblock head%}
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Student Website</title>
@@ -15,9 +16,9 @@
   </style>
  
   {% comment %} <body style="background-color: #1b263b;"> {% endcomment %}
-    <body id ='body' >
+    <body id ='body' style="background-color: #71797E" >
       
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
         <div class="container-fluid">
           <a class="navbar-brand" href="/home">Student Synergy</a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,7 +68,7 @@
         </div>
       </nav>
       <br>
-      <audio id="alarmSound" src="{% static 'js/audio.mp3' %}" preload="auto"></audio>
+      <audio id="alarmSound" src="{% static 'js/song.mp3' %}" preload="auto"></audio>
        <script src = "{% static 'js/timer.js' %}">  </script>
        
        

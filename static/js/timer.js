@@ -99,7 +99,7 @@
 
 
 function playSound() {
-    var alarmSound = document.getElementById('alarmSound');
+    var alarmSound = document.getElementById('alarmSound'); 
     alarmSound.play();
 }
 

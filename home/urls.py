@@ -21,5 +21,7 @@ urlpatterns = [
     path("gemini/", views.gemini, name='Chat'),
     path("chat_delete/", views.chat_delete, name='Chat'),
     path("chat/", views.chat, name='Chatting'),
-    path("tasks/", views.chat, name='Task'),
+    path("tasklist/", views.Task_template, name='Tasking'),
+    path("task/", views.getList, name='Task'),
+    
 ]

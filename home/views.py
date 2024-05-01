@@ -359,7 +359,7 @@ def gemini(request):
 
     # Generate a response from the Gemini model based on the user's prompt
     response = model.generate_content(prompt)
-    filename = request.GET.get('filename','output.txt')
+    
     # Extract the text response from the Gemini response object
     response_text = ''.join([p.text for p in response.candidates[0].content.parts])
     lines = response_text.strip().split('\n')
@@ -398,7 +398,7 @@ def gemini(request):
     # Close the cursor and database connection
     cursor.close()
     connection.close()
-    print(filename)
+    
     
     
     return render(request, 'chat.html', {'response_text': formatted_response, 'chat_data': chat_data})
@@ -432,3 +432,30 @@ def chat_delete(request):
     query = "TRUNCATE  TABLE chats;"
     cursor.execute(query)
     return redirect('/chat/')
+
+
+def getList(request):
+    if request.method=='POST':
+        GOOGLE_API_KEY = 'AIzaSyBoeUBPThWqaYJbLClhWgqW1TrLiNw_Xjg'
+        genai.configure(api_key=GOOGLE_API_KEY)
+
+        # Create a GenerativeModel instance using the Gemini model
+        model = genai.GenerativeModel('gemini-pro')
+        tasks_list = request.POST.get('task')
+        prompt = "Arrange the following tasks using eisenhower matrix . database ( table learners.tasks(Urgent_important VARCHAR(255),Urgent_notimportant VARCHAR(255),Noturgent_important VARCHAR(255),Noturgent_notimportant VARCHAR(255)); ). Give me only mysql query for inserting the tasks in the right column : "+ tasks_list 
+        response = model.generate_content(prompt)
+        response_text = ''.join([p.text for p in response.candidates[0].content.parts])
+        lines = response_text.strip().split('\n')
+        formatted_lines = []
+        for line in lines:
+            formatted_line = line.strip().replace("**", "").strip()
+            formatted_lines.append(formatted_line)
+
+# Join the formatted lines to create the final response
+        formatted_response = '\n'.join(formatted_lines)
+        print(formatted_response)
+        return HttpResponse(formatted_response)
+
+
+def Task_template(request):
+    return render(request, 'tasklist.html')
