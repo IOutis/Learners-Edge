@@ -17,6 +17,7 @@
  <body>
     {% block body %}
     <h2>Time Table Form</h2>
+    <div id="time_table" class="container-fluid">
     <form  method="post">
         {% csrf_token %}
         {{ form.as_p }}
@@ -37,6 +38,8 @@
 </script>
 
 </form>
+</div>
+<div id ="table_buttons" class="container-fluid">
 <form action="/get/" method="post">
     {% csrf_token %}
     <button class="btn" type="submit"><span>Get Timetable</span>
@@ -54,7 +57,7 @@
     <button  class="btn" type="submit"><span>Return</span>
       </button>
 </form>
-
+</div>
     {# Display the data if it exists #}
     {% if timetable_data %}
     <div>
@@ -74,7 +77,7 @@
                     
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="timetable_body">
                 {% for entry in timetable_data %}
                 <tr>
                     
@@ -118,7 +121,6 @@
   
     
 
-    
        
 
     

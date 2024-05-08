@@ -37,8 +37,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'home',
+    'home.apps.HomeConfig',
+    'register.apps.RegisterConfig',
     'channels',
+    'crispy_forms',
+    'crispy_bootstrap5',
+    
 ]
 
 MIDDLEWARE = [
@@ -158,3 +162,9 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': 60.0, # Run every 60 seconds
     },
 }
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK="bootstrap5"
+
+LOGIN_REDIRECT_URL="/"
+LOGOUT_REDIRECT_URL = "/"

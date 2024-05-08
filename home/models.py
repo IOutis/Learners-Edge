@@ -1,6 +1,7 @@
 
 # models.py
 from django.db import models
+from django.contrib.auth.models import User
 
 class TimetableEntry(models.Model):
     time_slot = models.TimeField()

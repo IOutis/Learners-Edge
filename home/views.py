@@ -164,7 +164,7 @@ def recurr(time_slot, task_activity, description, status, date):
     cursor.close()
 
 
-def gettable(request):
+def get_table_data():
     connection = mysql.connector.connect(
         host="localhost",
         user="root",
@@ -199,6 +199,10 @@ def gettable(request):
 
     # Pass the data to the template
     data = {'timetable_data': timetable_data}
+    return data
+
+def gettable(request):
+    data = get_table_data()
     return render(request,'timetable.html',data)
 
 
@@ -305,7 +309,7 @@ def save(ts, date, ta, de, stat, rec):
         
        
       
-        # return redirect('timetable.html')
+        return redirect('/timetable.html')
 
     
 

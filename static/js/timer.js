@@ -97,6 +97,30 @@
 // });
 
 
+window.onload = function() {
+    var timetableData = JSON.parse('{{ timetable_data_json|escapejs }}');
+    var timetableBody = document.getElementById('timetable_body');
+
+    timetableBody.innerHTML= '';
+
+    timetableData.forEach(function(entry) {
+        var row = '<tr>' +
+            '<td style="padding:10px">' + entry.date + '</td>' +
+            '<td style="padding:10px">' + entry.day_of_week + '</td>' +
+            '<td style="padding:10px">' + entry.time_slot + '</td>' +
+            '<td style="padding:10px">' + entry.task_activity + '</td>' +
+            '<td style="padding:10px">' + entry.description + '</td>' +
+            '<td style="padding:10px">' + entry.status + '</td>' +
+            '<td style="padding:10px">' + entry.recurring + '</td>' +
+            '<td><input type="checkbox" name="selected_tasks" value="' + entry.id + '"></td>' +
+            '</tr>';
+
+        timetableBody.innerHTML += row;
+    });
+};
+
+
+
 
 function playSound() {
     var alarmSound = document.getElementById('alarmSound'); 
