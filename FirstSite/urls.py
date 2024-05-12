@@ -23,5 +23,6 @@ from register import views as v
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('home.urls')),
+    path('accounts/', include('home.urls')),
     
 ]

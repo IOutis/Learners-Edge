@@ -5,9 +5,9 @@
 {% block body %}
 {% if user.is_authenticated %}
 Hi {{ user.username }}!
-<form action="{% url 'logout' %}" method="post">
+<form id="logout-form" action="{% url 'logout' %}" method="post">
+  <a href="#" onclick="document.getElementById('logout-form').submit(); return false;">Sign out</a>
   {% csrf_token %}
-  <button type="submit">Log Out</button>
 </form>
 {% else %}
 <p>You are not logged in</p>

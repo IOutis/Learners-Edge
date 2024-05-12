@@ -33,7 +33,9 @@ from google.cloud import *
 @csrf_exempt
 def index(request):
     
-    return render(request,'index.html')
+    return render(request,'index.html',{
+        'room_name' : 'broadcast'
+    })
     #return HttpResponse("This is homepage.")
 
 def dash(request):
@@ -130,7 +132,7 @@ def return_to_tt(request):
     return redirect('/timetable',)
 
 
-def recurr(time_slot, task_activity, description, status, date):
+def recurr(user_id,time_slot, task_activity, description, status, date):
     connection = mysql.connector.connect(
         host="localhost",
         user="root",
@@ -144,15 +146,15 @@ def recurr(time_slot, task_activity, description, status, date):
     
     while current_date <= end_date:
         # Check if the task already exists for the current date
-        query = "SELECT COUNT(*) FROM timetable WHERE task_activity = %s AND date = %s"
-        cursor.execute(query, (task_activity, current_date.strftime('%Y-%m-%d')))
+        query = "SELECT COUNT(*) FROM timetable WHERE user_id = %s and task_activity = %s AND date = %s"
+        cursor.execute(query, (user_id,task_activity, current_date.strftime('%Y-%m-%d')))
         count = cursor.fetchone()[0]
         
         if count == 0:
             # Insert recurring task into the database for each consecutive date
-            insert_query = "INSERT INTO timetable (time_slot, task_activity, description, status, recurring, date) VALUES (%s, %s, %s, %s, %s, %s)"
+            insert_query = "INSERT INTO timetable (user_id,time_slot, task_activity, description, status, recurring, date) VALUES (%s,%s, %s, %s, %s, %s, %s)"
             # Provide values for the recurring task
-            values = (time_slot, task_activity, description, status, 1, current_date.strftime('%Y-%m-%d'))
+            values = (user_id,time_slot, task_activity, description, status, 1, current_date.strftime('%Y-%m-%d'))
             cursor.execute(insert_query, values)
             
         
@@ -164,7 +166,7 @@ def recurr(time_slot, task_activity, description, status, date):
     cursor.close()
 
 
-def get_table_data():
+def get_table_data(user_id):
     connection = mysql.connector.connect(
         host="localhost",
         user="root",
@@ -172,8 +174,8 @@ def get_table_data():
         database="learners"
     )
     cursor = connection.cursor()
-    query = "SELECT * FROM timetable ORDER BY date,time_slot"
-    cursor.execute(query)
+    query = "SELECT * FROM timetable WHERE user_id = %s ORDER BY date, time_slot"
+    cursor.execute(query,(user_id,))
     fetched_data = cursor.fetchall()
 
     # Close the cursor and connection
@@ -202,7 +204,8 @@ def get_table_data():
     return data
 
 def gettable(request):
-    data = get_table_data()
+    user_id = request.user.username
+    data = get_table_data(user_id)
     return render(request,'timetable.html',data)
 
 
@@ -214,9 +217,14 @@ def delete_all(request):
         password="mmh13138",
         database="learners"
     )
+    user_id = request.user.username
+    print(type(user_id))
     cursor = connection.cursor()
-    query = "TRUNCATE  TABLE timetable;"
-    cursor.execute(query)
+    query = "DELETE from learners.timetable where user_id=%s"
+    cursor.execute(query,(user_id,))
+    connection.commit()
+    connection.close()
+    cursor.close()
     return redirect('/timetable')
 
 
@@ -236,14 +244,17 @@ def delete_tasks(request):
                 database="learners"
             )
             cursor = connection.cursor()
+            user_id = request.user.username
         if 'delete_button' in request.POST:
-                
                 # Construct the delete query to delete multiple tasks at once
-                delete_query = "DELETE FROM timetable WHERE id IN ({})".format(task_ids_string)
-                cursor.execute(delete_query)
+                delete_query = "DELETE FROM timetable WHERE user_id=%s id IN ({})".format(task_ids_string)
+                cursor.execute(delete_query,(user_id,))
+        elif 'progress_button' in request.POST:
+            status_query = "UPDATE timetable SET status = 'In Progress' where user_id=%s and  id IN ({})".format(task_ids_string)
+            cursor.execute(status_query,(user_id,))
         else:
-            status_query = "UPDATE timetable SET status = 'Completed' where  id IN ({})".format(task_ids_string)
-            cursor.execute(status_query)
+            status_query = "UPDATE timetable SET status = 'Completed' where user_id=%s and  id IN ({})".format(task_ids_string)
+            cursor.execute(status_query,(user_id,))
             
         connection.commit()
         
@@ -253,27 +264,28 @@ def delete_tasks(request):
 
 
 
-
-
+from django.contrib.auth.decorators import login_required
+@login_required
 def timetable(request):
 #phind one
     if request.method == 'POST':
         form = TimetableForm(request.POST)
         if form.is_valid():
             # Extract form data
+            user_id = str(request.user)
             time_slot = form.cleaned_data['time_slot']
             date = form.cleaned_data['date']
             task_activity = form.cleaned_data['task_activity']
             description = form.cleaned_data['description']
             status = form.cleaned_data['status']
             recurring = form.cleaned_data['recurring']
-
+            print(type(user_id))
             # Call the function to save the timetable entry
-            save(time_slot, date, task_activity, description, status, recurring)
+            save(user_id,time_slot, date, task_activity, description, status, recurring)
             
             if recurring:
                
-                recurr(time_slot, task_activity, description, status, date)
+                recurr(user_id,time_slot, task_activity, description, status, date)
 
             # Redirect to a new URL:
             return redirect('/timetable/')
@@ -282,7 +294,7 @@ def timetable(request):
     
     return render(request, 'timetable.html', {'form': form})
 
-def save(ts, date, ta, de, stat, rec):
+def save(user,ts, date, ta, de, stat, rec):
   
         connection = mysql.connector.connect(
             host="localhost",
@@ -299,8 +311,8 @@ def save(ts, date, ta, de, stat, rec):
 
         # Check if task is not empty and time slot is not '00:00'
        
-        insert_query = "INSERT INTO timetable (time_slot, task_activity, description, status, recurring, date) VALUES (%s, %s, %s, %s, %s, %s)"            # Execute the query with provided values
-        cursor.execute(insert_query, ( ts, ta, de, stat, rec,date))
+        insert_query = "INSERT INTO timetable (user_id,time_slot, task_activity, description, status, recurring, date) VALUES (%s,%s, %s, %s, %s, %s, %s)"            # Execute the query with provided values
+        cursor.execute(insert_query, (user,ts, ta, de, stat, rec,date))
         # Commit the transaction
         connection.commit()
         connection.close()
@@ -317,14 +329,14 @@ from django.http import JsonResponse
 from django.core import serializers
 from .models import TimetableEntry
 
-def get_scheduled_tasks(request):
-    # Fetch scheduled tasks from the database
-    tasks = TimetableEntry.objects.filter(date__gte=datetime.now().date())
-    # Serialize the tasks to JSON
-    tasks_json = serializers.serialize('json', tasks)
-    # Return the tasks as JSON
-    print(tasks_json)
-    return JsonResponse(tasks_json, safe=False)
+# def get_scheduled_tasks(request):
+#     # Fetch scheduled tasks from the database
+#     tasks = TimetableEntry.objects.filter(date__gte=datetime.now().date())
+#     # Serialize the tasks to JSON
+#     tasks_json = serializers.serialize('json', tasks)
+#     # Return the tasks as JSON
+#     print(tasks_json)
+#     return JsonResponse(tasks_json, safe=False)
 
 
 # def gemini(request):
@@ -438,28 +450,28 @@ def chat_delete(request):
     return redirect('/chat/')
 
 
-def getList(request):
-    if request.method=='POST':
-        GOOGLE_API_KEY = 'AIzaSyBoeUBPThWqaYJbLClhWgqW1TrLiNw_Xjg'
-        genai.configure(api_key=GOOGLE_API_KEY)
+# def getList(request):
+#     if request.method=='POST':
+#         GOOGLE_API_KEY = 'AIzaSyBoeUBPThWqaYJbLClhWgqW1TrLiNw_Xjg'
+#         genai.configure(api_key=GOOGLE_API_KEY)
 
-        # Create a GenerativeModel instance using the Gemini model
-        model = genai.GenerativeModel('gemini-pro')
-        tasks_list = request.POST.get('task')
-        prompt = "Arrange the following tasks using eisenhower matrix . database ( table learners.tasks(Urgent_important VARCHAR(255),Urgent_notimportant VARCHAR(255),Noturgent_important VARCHAR(255),Noturgent_notimportant VARCHAR(255)); ). Give me only mysql query for inserting the tasks in the right column : "+ tasks_list 
-        response = model.generate_content(prompt)
-        response_text = ''.join([p.text for p in response.candidates[0].content.parts])
-        lines = response_text.strip().split('\n')
-        formatted_lines = []
-        for line in lines:
-            formatted_line = line.strip().replace("**", "").strip()
-            formatted_lines.append(formatted_line)
+#         # Create a GenerativeModel instance using the Gemini model
+#         model = genai.GenerativeModel('gemini-pro')
+#         tasks_list = request.POST.get('task')
+#         prompt = "Arrange the following tasks using eisenhower matrix . database ( table learners.tasks(Urgent_important VARCHAR(255),Urgent_notimportant VARCHAR(255),Noturgent_important VARCHAR(255),Noturgent_notimportant VARCHAR(255)); ). Give me only mysql query for inserting the tasks in the right column : "+ tasks_list 
+#         response = model.generate_content(prompt)
+#         response_text = ''.join([p.text for p in response.candidates[0].content.parts])
+#         lines = response_text.strip().split('\n')
+#         formatted_lines = []
+#         for line in lines:
+#             formatted_line = line.strip().replace("**", "").strip()
+#             formatted_lines.append(formatted_line)
 
-# Join the formatted lines to create the final response
-        formatted_response = '\n'.join(formatted_lines)
-        print(formatted_response)
-        return HttpResponse(formatted_response)
+# # Join the formatted lines to create the final response
+#         formatted_response = '\n'.join(formatted_lines)
+#         print(formatted_response)
+#         return HttpResponse(formatted_response)
 
 
-def Task_template(request):
-    return render(request, 'tasklist.html')
+# def Task_template(request):
+#     return render(request, 'tasklist.html')

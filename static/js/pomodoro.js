@@ -30,6 +30,8 @@ function stopTimer() {
 function resetTimer() {
     clearInterval(timerInterval);
     timeLeft = 1500;
+    document.getElementById("startButton").style.display="block";
+    document.getElementById("pauseButton").style.display = "none";
     updateDisplay();
 }
 

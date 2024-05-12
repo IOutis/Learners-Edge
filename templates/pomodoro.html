@@ -11,24 +11,25 @@
 <body>
 {% block body%}
 {% csrf_token %}
-<div class="container-fluid  justify-content-center" id="Pomodoro_div">
-    <h1 class="col-md-auto col-12">Pomodoro Timer</h1>
-    <div id="timer" class="col-md-auto col-12">25:00</div>
-    <div id="controls" class="col-md-auto col-12">
-        <div class="container-fluid justify-content-center">
-            <svg id="startButton" xmlns="http://www.w3.org/2000/svg" width="56" height="56" fill="currentColor" class="bi bi-play-circle col-sm-4 col-3" viewBox="0 0 16 16"  onclick="toggleTimer()" >
+<div class="container-fluid " id="Pomodoro_div">
+    <h1 class="container-fluid">Pomodoro Timer</h1>
+    <div id="timer" class="container-fluid">25:00</div>
+    <div id="controls" class="container-fluid">
+        <div class="container-fluid justify-content-center row">
+            <svg id="startButton" xmlns="http://www.w3.org/2000/svg" width="86" height="86" fill="currentColor" class="bi bi-play-circle col col-sm-4 col-3" viewBox="0 0 16 16"  onclick="toggleTimer()" style="height:50;" >
                 <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
                 <path d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445"/>
             </svg>
-            <svg id="pauseButton" xmlns="http://www.w3.org/2000/svg" width="56" height="56" fill="currentColor" class="bi bi-pause-circle col-sm-4 col-3" viewBox="0 0 16 16"  style="display:none;" onclick="toggleTimer()">
+            <svg style="display:none; height:50; "id="pauseButton" xmlns="http://www.w3.org/2000/svg" width="86" height="86" fill="currentColor" class="bi bi-pause-circle  col col-sm-4 col-3" viewBox="0 0 16 16" onclick="toggleTimer()"  >
                 <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
                 <path d="M5 6.25a1.25 1.25 0 1 1 2.5 0v3.5a1.25 1.25 0 1 1-2.5 0zm3.5 0a1.25 1.25 0 1 1 2.5 0v3.5a1.25 1.25 0 1 1-2.5 0z"/>
             </svg>
 
-            <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" fill="currentColor" class="bi bi-arrow-clockwise col-sm-4 col-3" viewBox="0 0 16 16" onclick="resetTimer()">
-                <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
-                <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
-              </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="86" height="86" fill="currentColor" class="bi bi-arrow-clockwise col col-sm-4 col-3" viewBox="0 0 16 16" onclick="resetTimer()" id="resetButton"  style="height:50;">
+                <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1.908-.417A6 6 0 1 1 8 2z"/>
+                <path d="M8 4.466V.534a.25.25 0 0 1.41-.192l2.36 1.966c.12.1.12.284 0.384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
+            </svg>
+            
         </div>
     </div>
 

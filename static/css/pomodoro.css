@@ -7,28 +7,40 @@ body {
     margin-top: 50px;
 }
 #controls {
-    margin-top: 20px;
+    position: relative;
+    
+    display: flex; flex-direction: row; align-items: center; justify-content: center;
+    text-align: center;
+    height: fit-content;
 }
 #Pomodoro_div{
+    background-color: whitesmoke;
     max-width: fit-content;
-    margin-left: auto;
-    margin-right: auto;
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
-    display: inline-block;
-    vertical-align: top;
+    max-height: fit-content;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     text-align: center;
     height: fit-content;
-    
+    padding: 20px;
+    border-radius: 10px;
 }
 
-@media only screen and (max-width: 768px) {
-    /* For mobile phones: */
-    [class*="col-"] {
-      width: 100%;
+#startButton, #pauseButton, #resetButton {
+    transition: transform 0.2s ease-in-out;
+}
+
+#startButton:active, #pauseButton:active, #resetButton:active {
+    animation: butt 0.1s linear;
+}
+
+@keyframes butt {
+    from {
+        transform: scale(2);
     }
-  }
+    to {
+        transform: scale(2.3);
+    }
+}
+
+
 
 

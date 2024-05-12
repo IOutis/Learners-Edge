@@ -168,3 +168,21 @@ CRISPY_TEMPLATE_PACK="bootstrap5"
 
 LOGIN_REDIRECT_URL="/"
 LOGOUT_REDIRECT_URL = "/"
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'nickcaffery086@gmail.com'
+EMAIL_HOST_PASSWORD = 'aonb loih ifrg vccb'
+DEFAULT_FROM_EMAIL = 'nickcaffery086@gmail.com'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+SERVER_EMAIL = 'nickcaffery086@gmail.com'
+
+CHANNEL_LAYER={
+    'default':{
+        'BACKEND':'channels_redis.core.RedisChannelLayer',
+        'CONFIG' : {
+            'hosts':[('127.0.0.1',6379)],
+        },
+    },
+}

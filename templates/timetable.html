@@ -103,6 +103,8 @@
               </button>
             <button  class="btn" type="submit" name="complete_button" value="complete"><span>Mark Selected Tasks as Completed</span>
               </button>
+            <button  class="btn" type="submit" name="progress_button" value="progress"><span>Mark Selected Tasks as In Progress</span>
+              </button>
         
         </form>
         <audio id="alarmSound" src="{% static 'js/audio.mp3' %}" preload="auto"></audio>
@@ -115,6 +117,8 @@
        
         <button onclick="playSound()">Play Sound </button>
       
+    {%else%}
+        <p style=" display: flex; flex-direction: column; align-items: center; justify-content: center;">There is no timetable data to display. <br> <a href="\return\"> Save your timetable</a>to see the data here</p>
        
     </div>
     {% endif %}
