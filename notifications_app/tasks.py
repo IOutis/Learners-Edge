@@ -3,6 +3,7 @@ from notifications.signals import notify
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
 from notifications_app.utils import get_current_username
+import pytz
 @shared_task(bind=True)
 def test_func(self,user):
     user = User.objects.get(username=user)
@@ -22,7 +23,7 @@ from celery import shared_task
 import mysql.connector
 from datetime import datetime, timedelta
 from django.utils import timezone
-from django.utils.timezone import make_aware,now,get_current_timezone
+from django.utils.timezone import make_aware,now,get_current_timezone,localtime
 
 @shared_task
 def process_timetable_deadlines():
@@ -33,11 +34,11 @@ def process_timetable_deadlines():
         database="learners"
     )
     cursor = connection.cursor()
-    query = "SELECT * FROM timetable WHERE status != 'Not Done' ORDER BY date, time_slot"
+    query = "SELECT * FROM timetable WHERE status != 'Not Done' and status!='Completed' ORDER BY date, time_slot"
     cursor.execute(query)
     fetched_data = cursor.fetchall()
     
-    print(get_current_timezone())
+    # print(get_current_timezone())
     # Process the fetched data and send notifications for approaching deadlines
     # now = timezone.now()
     if not fetched_data:
@@ -49,10 +50,14 @@ def process_timetable_deadlines():
     _, user_id, time_slot, task_activity, _, status, _, _, _, date = first_task
     time_slot = (datetime.min + time_slot).time()
     task_datetime = datetime.combine(date, time_slot)
-    task_datetime = make_aware(task_datetime)
-    current_datetime = now()
+    # task_datetime = make_aware(task_datetime)
+    # current_datetime = now()
+    # current_time = current_datetime.time()
+    current_tz =  pytz.timezone('Asia/Kolkata')
+    task_datetime = make_aware(task_datetime, timezone=current_tz)
+    current_datetime = localtime(timezone.now(), timezone=pytz.timezone('Asia/Kolkata'))
+    # print(current_datetime)
     current_time = current_datetime.time()
-
     # Extract time component from task_datetime
     task_time = task_datetime.time()
 
@@ -62,10 +67,10 @@ def process_timetable_deadlines():
     # Now you can add timedelta to current_datetime_with_time
     future_time = current_datetime_with_time + timedelta(minutes=5)
     future_time= future_time.time()
-    print(type(task_time))
-    print(type(current_time))
-    print(type(future_time))
-    print(current_time)
+    # print(type(task_time))
+    # print(type(current_time))
+    # print(type(future_time))
+    # print(current_time)
     # Check if the deadline of the first task is approaching
     if date == current_datetime.date():
         print("In first condition")
@@ -80,7 +85,11 @@ def process_timetable_deadlines():
             connection.commit()
             print("Status updated")
         
-        
+    elif date<current_datetime.date():
+            update_query = "UPDATE timetable SET status = 'Not Done' WHERE id = %s"
+            cursor.execute(update_query, (first_task[0],))  # Assuming id is the first column
+            connection.commit()
+            print("Status updated")
     # for row in fetched_data:
     #     print("Here")
     #     id, user_id, time_slot, task_activity, description, status, recurring, created_at,updated_at, date = row
