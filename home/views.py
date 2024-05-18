@@ -250,7 +250,7 @@ def delete_tasks(request):
             user_id = request.user.username
         if 'delete_button' in request.POST:
                 # Construct the delete query to delete multiple tasks at once
-                delete_query = "DELETE FROM timetable WHERE user_id=%s id IN ({})".format(task_ids_string)
+                delete_query = "DELETE FROM timetable WHERE user_id=%s AND id IN ({})".format(task_ids_string)
                 cursor.execute(delete_query,(user_id,))
         elif 'progress_button' in request.POST:
             status_query = "UPDATE timetable SET status = 'In Progress' where user_id=%s and  id IN ({})".format(task_ids_string)

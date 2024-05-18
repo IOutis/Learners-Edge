@@ -38,11 +38,11 @@ class TimetableForm(forms.Form):
         current_date = datetime.now().date()
 
         # Validate that the time_slot is not before the current time
-        if 'time_slot' in cleaned_data and cleaned_data['time_slot'] < current_time:
-            raise ValidationError("Time cannot be before the current time.")
 
         # Validate that the date is not before the current date
         if 'date' in cleaned_data and cleaned_data['date'] < current_date:
             raise ValidationError("Date cannot be before the current date.")
+        elif 'date' in cleaned_data and cleaned_data['date'] == current_date and 'time_slot' in cleaned_data and cleaned_data['time_slot'] < current_time:
+            raise ValidationError("Time cannot be before the current time.")
 
         return cleaned_data
