@@ -1,3 +1,4 @@
+import json
 import mysql.connector
 from django.shortcuts import *
 from django.views.decorators.csrf import csrf_exempt
@@ -11,7 +12,7 @@ from .forms import TimetableForm
 # views.py
 from django.http import JsonResponse
 from django.core import serializers
-from .models import TimetableEntry # Assuming TimetableEntry is your model
+# from .models import TimetableEntry # Assuming TimetableEntry is your model
 
 
 
@@ -28,11 +29,13 @@ def to_markdown(text):
 from google.cloud import *
 
 
-
+from django.contrib.auth.decorators import login_required
+from notifications_app.tasks import process_timetable_deadlines
 # Create your views here.
 @csrf_exempt
 def index(request):
-    
+    if request.user.is_authenticated:
+        process_timetable_deadlines.delay()
     return render(request,'index.html',{
         'room_name' : 'broadcast'
     })
@@ -174,7 +177,7 @@ def get_table_data(user_id):
         database="learners"
     )
     cursor = connection.cursor()
-    query = "SELECT * FROM timetable WHERE user_id = %s ORDER BY date, time_slot"
+    query = "SELECT * FROM timetable WHERE user_id = %s and status!= 'Not Done' ORDER BY date, time_slot"
     cursor.execute(query,(user_id,))
     fetched_data = cursor.fetchall()
 
@@ -327,7 +330,7 @@ def save(user,ts, date, ta, de, stat, rec):
 
 from django.http import JsonResponse
 from django.core import serializers
-from .models import TimetableEntry
+# from .models import TimetableEntry
 
 # def get_scheduled_tasks(request):
 #     # Fetch scheduled tasks from the database
@@ -475,3 +478,52 @@ def chat_delete(request):
 
 # def Task_template(request):
 #     return render(request, 'tasklist.html')
+
+from asgiref.sync import async_to_sync
+from channels.generic.websocket import WebsocketConsumer
+
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+import time
+from notifications.signals import notify
+from django.contrib.auth.models import User
+from notifications_app.tasks import test_func
+def test(request):
+    user = request.user.id
+    channel_layer = get_channel_layer()
+    # for i in range(1,10):
+    #     async_to_sync(channel_layer.group_send)(
+    #         "notification_"+str(user),
+    #         {
+    #             'type': 'send_message',
+    #             'text_data': json.dumps({'New':"Notification","count":i})
+    #         }
+    #     )
+    #     time.sleep(2)
+    # user = User.objects.all()
+    notify.send(user,recipient=user, verb='you reached level 10')
+    # time.sleep(5)
+    test_func.delay(user)
+    return redirect('/home/')
+
+
+from django.http import JsonResponse
+from notifications.models import Notification
+
+def mark_notification_as_read(request, notification_id):
+    try:
+        notification = Notification.objects.get(id=notification_id)
+        notification.deleted = False
+        notification.save()
+        return JsonResponse({'status': 'success'})
+    except Notification.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'Notification not found'}, status=404)
+    
+    
+
+def testing(request,notification_id):
+    print(notification_id)
+    notification = Notification.objects.get(id=notification_id)
+    notification.mark_as_read()
+    notification.delete()
+    return redirect('/get/')

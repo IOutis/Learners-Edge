@@ -97,46 +97,46 @@
 // });
 
 
-window.onload = function() {
-    var timetableData = JSON.parse('{{ timetable_data_json|escapejs }}');
-    var timetableBody = document.getElementById('timetable_body');
+// window.onload = function() {
+//     var timetableData = JSON.parse('{{ timetable_data_json|escapejs }}');
+//     var timetableBody = document.getElementById('timetable_body');
 
-    timetableBody.innerHTML= '';
+//     timetableBody.innerHTML= '';
 
-    timetableData.forEach(function(entry) {
-        var row = '<tr>' +
-            '<td style="padding:10px">' + entry.date + '</td>' +
-            '<td style="padding:10px">' + entry.day_of_week + '</td>' +
-            '<td style="padding:10px">' + entry.time_slot + '</td>' +
-            '<td style="padding:10px">' + entry.task_activity + '</td>' +
-            '<td style="padding:10px">' + entry.description + '</td>' +
-            '<td style="padding:10px">' + entry.status + '</td>' +
-            '<td style="padding:10px">' + entry.recurring + '</td>' +
-            '<td><input type="checkbox" name="selected_tasks" value="' + entry.id + '"></td>' +
-            '</tr>';
+//     timetableData.forEach(function(entry) {
+//         var row = '<tr>' +
+//             '<td style="padding:10px">' + entry.date + '</td>' +
+//             '<td style="padding:10px">' + entry.day_of_week + '</td>' +
+//             '<td style="padding:10px">' + entry.time_slot + '</td>' +
+//             '<td style="padding:10px">' + entry.task_activity + '</td>' +
+//             '<td style="padding:10px">' + entry.description + '</td>' +
+//             '<td style="padding:10px">' + entry.status + '</td>' +
+//             '<td style="padding:10px">' + entry.recurring + '</td>' +
+//             '<td><input type="checkbox" name="selected_tasks" value="' + entry.id + '"></td>' +
+//             '</tr>';
 
-        timetableBody.innerHTML += row;
-    });
-};
-
-
+//         timetableBody.innerHTML += row;
+//     });
+// };
 
 
-function playSound() {
-    var alarmSound = document.getElementById('alarmSound'); 
-    alarmSound.play();
-}
 
-function timer_run() {
-    var scheduledTimeElement = document.getElementById('scheduledTime');
-    var scheduledTime = scheduledTimeElement.textContent || scheduledTimeElement.innerText;
-    var t2 = new Date();
-    var sm = parseInt(scheduledTime.slice(2, 4));
-    var sh = parseInt(scheduledTime.slice(0, 2));
+
+// function playSound() {
+//     var alarmSound = document.getElementById('alarmSound'); 
+//     alarmSound.play();
+// }
+
+// function timer_run() {
+//     var scheduledTimeElement = document.getElementById('scheduledTime');
+//     var scheduledTime = scheduledTimeElement.textContent || scheduledTimeElement.innerText;
+//     var t2 = new Date();
+//     var sm = parseInt(scheduledTime.slice(2, 4));
+//     var sh = parseInt(scheduledTime.slice(0, 2));
     
-    if (sh === t2.getHours() && sm === t2.getMinutes()) {
-        playSound();
-    }
-}
-playSound();// Check the time every minute
-setInterval(playSound, 600); // Check the time every minute
+//     if (sh === t2.getHours() && sm === t2.getMinutes()) {
+//         playSound();
+//     }
+// }
+// playSound();// Check the time every minute
+// setInterval(playSound, 600); // Check the time every minute

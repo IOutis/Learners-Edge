@@ -28,9 +28,20 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [('127.0.0.1', 6379)],
+        },
+    },
+}
+
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -39,11 +50,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'home.apps.HomeConfig',
     'register.apps.RegisterConfig',
-    'channels',
     'crispy_forms',
     'crispy_bootstrap5',
-    
+    'notifications',
+    'notifications_app.apps.NotificationsAppConfig',
+    'django_celery_results',
+    'django_celery_beat',
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -51,6 +65,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'home.middleware.ThreadLocalMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -83,11 +98,14 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
-        'NAME': 'learners', # Your database name
-        'USER': 'root', # Your MySQL username
-        'PASSWORD': 'mmh13138', # Your MySQL password
-        'HOST': 'localhost', # Or an IP Address that your DB is hosted on
-        'PORT': '3306', # Default MySQL port
+    },
+    'mysql': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'learners',  # Your database name
+        'USER': 'root',  # Your MySQL username
+        'PASSWORD': 'mmh13138',  # Your MySQL password
+        'HOST': 'localhost',  # Or an IP Address that your DB is hosted on
+        'PORT': '3306',  # Default MySQL port
     }
 }
 
@@ -140,10 +158,9 @@ STATICFILES_DIRS = [
 
 ASGI_APPLICATION = 'FirstSite.asgi.application'
 
-CELERY_BROKER_URL = 'redis://localhost:6379'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379'
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField' #Already there
+
+
 
 
 from django.core.management.base import BaseCommand
@@ -156,12 +173,7 @@ from django.core.management.base import BaseCommand
 #         check_due_tasks.delay()
 
 
-CELERY_BEAT_SCHEDULE = {
-    'check_due_tasks': {
-        'task': 'your_app_name.tasks.check_due_tasks',
-        'schedule': 60.0, # Run every 60 seconds
-    },
-}
+
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK="bootstrap5"
@@ -178,11 +190,33 @@ DEFAULT_FROM_EMAIL = 'nickcaffery086@gmail.com'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 SERVER_EMAIL = 'nickcaffery086@gmail.com'
 
-CHANNEL_LAYER={
-    'default':{
-        'BACKEND':'channels_redis.core.RedisChannelLayer',
-        'CONFIG' : {
-            'hosts':[('127.0.0.1',6379)],
-        },
-    },
-}
+
+
+#to be removed later 
+SECURE_SSL_REDIRECT   = False
+SESSION_COOKIE_SECURE=False
+CSRF_COOKIE_SECURE=False
+
+
+#celery settings
+# CELERY_ACCEPT_CONTENT = ['application/json']
+# CELERY_RESULT_SERIALIZER ='json'
+# CELERY_TASK_SERIALIZER  =   'json'
+# CELERY_TIMEZONE = 'Asia/Kolkata'
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
+task_serializer = 'json'
+accept_content = ['json']
+result_serializer = 'json'
+timezone = 'Asia/Kolkata'
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_ENABLE_UTC = False
+
+#django-notifications-hq
+DJANGO_NOTIFICATIONS_CONFIG = { 'SOFT_DELETE': True}
+
+# Broker Connection Retry
+broker_connection_retry_on_startup = True
+
+
+#celery beat settings
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'

@@ -3,12 +3,12 @@ from django.urls import path, include
 from home import views
 from register import views as v
 from django.contrib.auth import views as auth_views
-
+# from notifications_app.consumers import NotificationConsumer
+import notifications.urls
 
 urlpatterns = [
     path('', views.index, name="Home"), # Root URL
     path('home/', views.index, name="Home"), # Root URL
-    path('/', views.index, name="Home"), # Root URL
     path('about/', views.about, name="About"),
     path('services/', views.services, name="Services"),
     path('dashboard/', views.dash, name="Dashboard"),
@@ -37,7 +37,14 @@ urlpatterns = [
     
     path('reset/<uidb64>/<token>/',auth_views.PasswordResetConfirmView.as_view(),name='password_reset_confirm'),
     
+    
+    path('test/', views.test, name="home"),
+    path('testing/<int:notification_id>/', views.testing, name="home"),
     path('reset/done/',auth_views.PasswordResetCompleteView.as_view(),name='password_reset_complete'),
     path("", include('django.contrib.auth.urls')),
     path('user_logout/', v.user_logout, name='logout'),
+    # path('ws/notifications/', NotificationConsumer.as_asgi()),
+    # path('ws/user/<str:user_id>/', NotificationConsumer.as_asgi()),
+    path('inbox/notifications/', include('notifications.urls', namespace='notifications')),
+     path('mark_notification_as_read/<int:notification_id>/', views.mark_notification_as_read, name='mark_notification_as_read'),
 ]

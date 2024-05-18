@@ -19,10 +19,12 @@ from django.urls import path,include
 from  .import views
 from django.http import HttpResponse
 from register import views as v
+from django.utils import timezone
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('home.urls')),
     path('accounts/', include('home.urls')),
+     path('inbox/notifications/', include('notifications.urls', namespace='notifications')),
     
 ]

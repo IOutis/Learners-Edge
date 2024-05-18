@@ -1,15 +1,38 @@
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import,unicode_literals
+from celery.schedules import crontab
 import os
 from celery import Celery
+from django.conf import settings
+from django.contrib.auth import get_user
 
-# set the default Django settings module for the 'celery' program.
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'FirstSite.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE','FirstSite.settings')
 
 app = Celery('FirstSite')
 
-# Using a string here means the worker doesn't have to serialize
-# the configuration object to child processes.
-app.config_from_object('django.conf:settings', namespace='CELERY')
+app.conf.enable_utc = True
+app.conf.update(timezone='Asia/Kolkata')  
 
-# Load task modules from all registered Django app configs.
+# app.conf.update(enable_utc=False,timezone='Asia/Kolkata',)
+app.config_from_object(settings,namespace='CELERY')
+
+
+
+
+#CELERY BEATS SETTINGS HERE
+app.conf.beat_schedule={
+    'every-5-seconds': {
+        'task': 'notifications_app.tasks.process_timetable_deadlines',
+        'schedule': 10.0,
+        # 'args': ('mdmus',), 
+}
+}
+
+
 app.autodiscover_tasks()
+
+
+@app.task(bind=True)
+def debug_task(self):
+    print(f'Request: {self.request!r}')
+
+
