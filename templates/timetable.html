@@ -42,7 +42,18 @@
 <div id ="table_buttons" class="container-fluid">
 <form action="/get/" method="post">
     {% csrf_token %}
-    <button class="btn" type="submit"><span>Get Timetable</span>
+    <button class="btn" type="submit"><span>Get Planned or In progress tasks</span>
+      </button>
+</form>
+<form action="/get_notdone/" method="post">
+    {% csrf_token %}
+    <button class="btn" type="submit"><span>Get Not Completed Tasks</span>
+      </button>
+</form>
+
+<form action="/get_done/" method="post">
+    {% csrf_token %}
+    <button class="btn" type="submit"><span>Get Completed Tasks</span>
       </button>
 </form>
 
@@ -118,7 +129,7 @@
         <button onclick="playSound()">Play Sound </button>
       
     {%else%}
-        <p style=" display: flex; flex-direction: column; align-items: center; justify-content: center;">There is no timetable data to display. <br> <a href="\return\"> Save your timetable</a>to see the data here</p>
+        <p style=" display: flex; flex-direction: column; align-items: center; justify-content: center;">There is no timetable data to display. <br> <a href="\return\"> Save your timetable</a>to see the data here <br> or click get time table</p>
        
     </div>
     {% endif %}

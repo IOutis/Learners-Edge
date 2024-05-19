@@ -24,7 +24,7 @@ import mysql.connector
 from datetime import datetime, timedelta
 from django.utils import timezone
 from django.utils.timezone import make_aware,now,get_current_timezone,localtime
-
+from django.core.cache import cache
 @shared_task
 def process_timetable_deadlines():
     connection = mysql.connector.connect(
@@ -43,13 +43,15 @@ def process_timetable_deadlines():
     # now = timezone.now()
     if not fetched_data:
         # Handle case where there are no tasks in the timetable
-        print(f"No tasks found in the timetable for user {user_id}")
+        print(f"No tasks found in the timetable for user ")
         return
     
     first_task = fetched_data[0]
     _, user_id, time_slot, task_activity, _, status, _, _, _, date = first_task
     time_slot = (datetime.min + time_slot).time()
     task_datetime = datetime.combine(date, time_slot)
+    
+    print(user_id, time_slot, date)
     # task_datetime = make_aware(task_datetime)
     # current_datetime = now()
     # current_time = current_datetime.time()
@@ -65,31 +67,42 @@ def process_timetable_deadlines():
     current_datetime_with_time = current_datetime.replace(hour=current_time.hour, minute=current_time.minute, second=current_time.second, microsecond=current_time.microsecond)
 
     # Now you can add timedelta to current_datetime_with_time
-    future_time = current_datetime_with_time + timedelta(minutes=5)
+    future_time = current_datetime_with_time + timedelta(seconds=10)
     future_time= future_time.time()
     # print(type(task_time))
     # print(type(current_time))
     # print(type(future_time))
     # print(current_time)
     # Check if the deadline of the first task is approaching
+    user_instance = User.objects.get(username=user_id)
+    key = f"notification_sent_{user_id}_{task_activity}"
+    # print('cache : ',cache.g)
     if date == current_datetime.date():
-        print("In first condition")
+        print("In first condition of date")
         if current_time <= task_time <= future_time:
             # Send notification for approaching deadline
             message = f"Task '{task_activity}' deadline is approaching!"
-            notify.send(user_id, recipient=user_id, verb=message)
+            notify.send(user_instance, recipient=user_instance, verb=message)
             print("If condition is true")
         elif task_time<current_time:
             update_query = "UPDATE timetable SET status = 'Not Done' WHERE id = %s"
             cursor.execute(update_query, (first_task[0],))  # Assuming id is the first column
             connection.commit()
+            notify.send(user_instance, recipient=user_instance, verb=f"{task_activity} status updated to 'Not Done'")
             print("Status updated")
+        else:
+            print("Else condition")
+            # notify.send(user_instance, recipient=user_instance, verb="Just checking else")
+            
         
     elif date<current_datetime.date():
+            print("Second condition of date")
             update_query = "UPDATE timetable SET status = 'Not Done' WHERE id = %s"
             cursor.execute(update_query, (first_task[0],))  # Assuming id is the first column
             connection.commit()
             print("Status updated")
+            notify.send(user_instance, recipient=user_instance, verb="One task status updated")
+            
     # for row in fetched_data:
     #     print("Here")
     #     id, user_id, time_slot, task_activity, description, status, recurring, created_at,updated_at, date = row

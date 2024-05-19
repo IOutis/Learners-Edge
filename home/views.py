@@ -213,6 +213,95 @@ def gettable(request):
 
 
 
+def get_notdone_data(user_id):
+    connection = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="mmh13138",
+        database="learners"
+    )
+    cursor = connection.cursor()
+    query = "SELECT * FROM timetable WHERE user_id = %s and status = 'Not Done' ORDER BY date, time_slot"
+    cursor.execute(query,(user_id,))
+    fetched_data = cursor.fetchall()
+
+    # Close the cursor and connection
+    cursor.close()
+    connection.close()
+
+    # Process the fetched data and populate the timetable_data list
+    timetable_data = []
+    for row in fetched_data:
+        date_obj = datetime.strptime(str(row[9]), '%Y-%m-%d')
+    # Derive the day of the week from the datetime object
+        day_of_week = date_obj.strftime('%A')
+        timetable_data.append({
+            'id':row[0],
+            'day_of_week': day_of_week,
+            'time_slot': row[2],
+            'task_activity': row[3],
+            'description': row[4],
+            'status': row[5],
+            'recurring': 'Recurring' if row[6]==1 else 'Not recurring',
+            'date':row[9],
+        })
+
+    # Pass the data to the template
+    data = {'timetable_data': timetable_data}
+    return data
+
+
+def getnotdone(request):
+    user_id = request.user.username
+    data = get_notdone_data(user_id)
+    return render(request,'timetable.html',data)
+
+
+def get_completed_data(user_id):
+    connection = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="mmh13138",
+        database="learners"
+    )
+    cursor = connection.cursor()
+    query = "SELECT * FROM timetable WHERE user_id = %s and status = 'Completed' ORDER BY date, time_slot"
+    cursor.execute(query,(user_id,))
+    fetched_data = cursor.fetchall()
+
+    # Close the cursor and connection
+    cursor.close()
+    connection.close()
+
+    # Process the fetched data and populate the timetable_data list
+    timetable_data = []
+    for row in fetched_data:
+        date_obj = datetime.strptime(str(row[9]), '%Y-%m-%d')
+    # Derive the day of the week from the datetime object
+        day_of_week = date_obj.strftime('%A')
+        timetable_data.append({
+            'id':row[0],
+            'day_of_week': day_of_week,
+            'time_slot': row[2],
+            'task_activity': row[3],
+            'description': row[4],
+            'status': row[5],
+            'recurring': 'Recurring' if row[6]==1 else 'Not recurring',
+            'date':row[9],
+        })
+
+    # Pass the data to the template
+    data = {'timetable_data': timetable_data}
+    return data
+
+
+def getcompleted(request):
+    user_id = request.user.username
+    data = get_completed_data(user_id)
+    return render(request,'timetable.html',data)
+
+
+
 def delete_all(request):
     connection = mysql.connector.connect(
         host="localhost",
