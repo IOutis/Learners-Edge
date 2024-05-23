@@ -16,17 +16,14 @@
 
  <body>
     {% block body %}
-    <h2>Time Table Form</h2>
+    <h2 style="display: flex; flex-direction: row; align-items: center; justify-content: center; padding:10px;">Time Table Form</h2>
     <div id="time_table" class="container-fluid">
     <form  method="post">
         {% csrf_token %}
         {{ form.as_p }}
         
         
-        <button type="submit" class="btn">
-          <span>Save</span>
-          
-        </button>
+        <button class="button-30" role="button" type="submit">Save</button>
         
         
         <script>
@@ -42,31 +39,26 @@
 <div id ="table_buttons" class="container-fluid">
 <form action="/get/" method="post">
     {% csrf_token %}
-    <button class="btn" type="submit"><span>Get Planned or In progress tasks</span>
-      </button>
+      <button class="button-30" role="button" type="submit">Get Planned or In progress tasks</button>
 </form>
 <form action="/get_notdone/" method="post">
     {% csrf_token %}
-    <button class="btn" type="submit"><span>Get Not Completed Tasks</span>
-      </button>
+    <button class="button-30" role="button" type="submit">Get Not Completed tasks</button>
 </form>
 
 <form action="/get_done/" method="post">
     {% csrf_token %}
-    <button class="btn" type="submit"><span>Get Completed Tasks</span>
-      </button>
+    <button class="button-30" role="button" type="submit">Get Completed tasks</button>
 </form>
 
 
 <form action="/delete_all/" method="post">
     {% csrf_token %}
-    <button class="btn" type="submit"><span>Delete All</span>
-      </button>
+    <button class="button-30" role="button" type="submit">Delete all</button>
 </form>
 <form action="/return/" method="post">
     {% csrf_token %}
-    <button  class="btn" type="submit"><span>Return</span>
-      </button>
+    <button class="button-30" role="button" type="submit">Return to form</button>
 </form>
 </div>
     {# Display the data if it exists #}
@@ -110,12 +102,9 @@
         
         
             {% csrf_token %}
-            <button  class="btn" type="submit" name="delete_button" value="delete"><span>Delete Selected Tasks</span>
-              </button>
-            <button  class="btn" type="submit" name="complete_button" value="complete"><span>Mark Selected Tasks as Completed</span>
-              </button>
-            <button  class="btn" type="submit" name="progress_button" value="progress"><span>Mark Selected Tasks as In Progress</span>
-              </button>
+              <button class="button-30" role="button" type="submit" name ="delete_button" value="delete">Delete Selected Tasks</button>
+              <button class="button-30" role="button" type="submit" name ="complete_button" value="complete">Mark as 'Complete'</button>
+              <button class="button-30" role="button" type="submit" name ="progress_button" value="progress">Mark as 'In progress'</button>
         
         </form>
         <audio id="alarmSound" src="{% static 'js/audio.mp3' %}" preload="auto"></audio>
@@ -123,10 +112,6 @@
         <span id = "fir" style="display:none;" >{{ timetable_data.0.date }}</span>
         <span id = "scheduledTime" style="display:none;">{{ timetable_data.0.time_slot }}</span>
         
-    <audio id="alarmSound" src="{% static 'audio.mp3' %}" preload="auto"></audio>
-       <script src = "{% static 'js/timer.js' %}">  </script>
-       
-        <button onclick="playSound()">Play Sound </button>
       
     {%else%}
         <p style=" display: flex; flex-direction: column; align-items: center; justify-content: center;">There is no timetable data to display. <br> <a href="\return\"> Save your timetable</a>to see the data here <br> or click get time table</p>

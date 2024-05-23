@@ -324,35 +324,39 @@ def delete_all(request):
 
 def delete_tasks(request):
     if request.method == 'POST':
-        selected_task_ids = request.POST.getlist('selected_tasks')
-        if selected_task_ids:
-            # Convert list of task IDs to string format for query
-            task_ids_string = ', '.join(selected_task_ids)
+        try:
+            selected_task_ids = request.POST.getlist('selected_tasks')
+            if selected_task_ids:
+                # Convert list of task IDs to string format for query
+                task_ids_string = ', '.join(selected_task_ids)
+                
+                connection = mysql.connector.connect(
+                    host="localhost",
+                    user="root",
+                    password="mmh13138",
+                    database="learners"
+                )
+                cursor = connection.cursor()
+                user_id = request.user.username
+            if 'delete_button' in request.POST:
+                    # Construct the delete query to delete multiple tasks at once
+                    delete_query = "DELETE FROM timetable WHERE user_id=%s AND id IN ({})".format(task_ids_string)
+                    cursor.execute(delete_query,(user_id,))
+            elif 'progress_button' in request.POST:
+                status_query = "UPDATE timetable SET status = 'In Progress' where user_id=%s and  id IN ({})".format(task_ids_string)
+                cursor.execute(status_query,(user_id,))
+            else:
+                status_query = "UPDATE timetable SET status = 'Completed' where user_id=%s and  id IN ({})".format(task_ids_string)
+                cursor.execute(status_query,(user_id,))
+                
+            connection.commit()
             
-            connection = mysql.connector.connect(
-                host="localhost",
-                user="root",
-                password="mmh13138",
-                database="learners"
-            )
-            cursor = connection.cursor()
-            user_id = request.user.username
-        if 'delete_button' in request.POST:
-                # Construct the delete query to delete multiple tasks at once
-                delete_query = "DELETE FROM timetable WHERE user_id=%s AND id IN ({})".format(task_ids_string)
-                cursor.execute(delete_query,(user_id,))
-        elif 'progress_button' in request.POST:
-            status_query = "UPDATE timetable SET status = 'In Progress' where user_id=%s and  id IN ({})".format(task_ids_string)
-            cursor.execute(status_query,(user_id,))
-        else:
-            status_query = "UPDATE timetable SET status = 'Completed' where user_id=%s and  id IN ({})".format(task_ids_string)
-            cursor.execute(status_query,(user_id,))
-            
-        connection.commit()
-        
-        cursor.close()
-        connection.close()
-    return redirect('/timetable')
+            cursor.close()
+            connection.close()
+            return redirect('/timetable')
+        except:
+            return redirect('/timetable')
+    
 
 
 
@@ -539,6 +543,8 @@ def chat_delete(request):
     cursor = connection.cursor()
     query = "TRUNCATE  TABLE chats;"
     cursor.execute(query)
+    cursor.close()
+    connection.close()
     return redirect('/chat/')
 
 
@@ -616,3 +622,494 @@ def testing(request,notification_id):
     notification.mark_as_read()
     notification.delete()
     return redirect('/get/')
+
+
+
+from django.conf import settings
+import os
+
+def react_app(request):
+    index_html_path = os.path.join(settings.BASE_DIR, 'static', 'react', 'index.html')
+    return render(request, index_html_path)
+
+
+# @login_required
+# def dashboard(request):
+#     connection = mysql.connector.connect(
+#                 host="localhost",
+#                 user="root",
+#                 password="mmh13138",
+#                 database="learners"
+#             )
+#     cursor = connection.cursor()
+#     user = str(request.user)
+#     query = '''SELECT COUNT(*) as completed_task_count, date,status
+# FROM learners.timetable
+# WHERE status = 'Completed' AND user_id =%s
+# GROUP BY date
+# ORDER BY date ASC;'''
+#     cursor.execute(query,(user,))
+#     completed_task_data = cursor.fetchall()
+    
+    
+#     query = '''SELECT COUNT(*) as completed_task_count, date,status
+# FROM learners.timetable
+# WHERE status = 'Not Done' AND user_id =%s
+# GROUP BY date
+# ORDER BY date ASC;'''
+#     cursor.execute(query,(user,))
+#     not_completed_task_data = cursor.fetchall()
+#     print(not_completed_task_data)
+
+
+    
+#     data_list = [{'date': d[1], 'value': d[0], 'status': d[2]} for d in completed_task_data + not_completed_task_data]
+
+# # Sort by date
+#     data_list.sort(key=lambda x: x['date'])
+#     earliest_date = data_list[0]['date']
+#     latest_date = data_list[-1]['date']
+#     # print(type(min_date)) 
+#     total_days = (latest_date - earliest_date).days + 1
+
+# # Generate a list of dates starting from the earliest date
+#     dates_sequence = []
+#     current_date = earliest_date
+#     while current_date <= latest_date:
+#         dates_sequence.append(current_date.isoformat())
+#         current_date += timedelta(days=1)
+    
+#     final_data_list = []
+
+# # Iterate over the dates_sequence
+#     for date_str in dates_sequence:
+#         # Check if the date exists in data_list
+#         for item in data_list:
+            
+#             if str(item['date']) == date_str:
+#                 print(type(item['date']),type(date_str))    
+#                 # If found, append the item to final_data_list
+#                 final_data_list.append({'date': date_str, 'value': item['value'], 'status': item['status']})
+#                 break
+#         else:
+#             # If the date was not found, append a dictionary with value 0
+#             final_data_list.append({'date': date_str, 'value': 0, 'status': item['status']})
+#     print(final_data_list)
+#     final_data_json = json.dumps(final_data_list)
+#     #date count of task where status = complete
+    
+#     cursor.close()
+#     connection.close()
+#     return render(request, 'dashboard.html',{'data':final_data_json})
+
+
+# @login_required
+# def dashboard(request):
+#     connection = mysql.connector.connect(
+#                 host="localhost",
+#                 user="root",
+#                 password="mmh13138",
+#                 database="learners"
+#             )
+#     cursor = connection.cursor()
+#     user = str(request.user)
+
+#     # Query for completed tasks
+#     query_completed = '''SELECT COUNT(*) as completed_task_count, date,status
+#                          FROM learners.timetable
+#                          WHERE status = 'Completed' AND user_id = %s
+#                          GROUP BY date
+#                          ORDER BY date ASC;'''
+#     cursor.execute(query_completed, (user,))
+#     completed_task_data = cursor.fetchall()
+
+#     # Query for not completed tasks
+#     query_not_completed = '''SELECT COUNT(*) as completed_task_count, date,status
+#                              FROM learners.timetable
+#                              WHERE status = 'Not Done' AND user_id = %s
+#                              GROUP BY date
+#                              ORDER BY date ASC;'''
+#     cursor.execute(query_not_completed, (user,))
+#     not_completed_task_data = cursor.fetchall()
+
+#     # Convert data to JSON
+#     completed_tasks = [{'date': d[1].isoformat(), 'value': d[0]} for d in completed_task_data]
+#     not_completed_tasks = [{'date': d[1].isoformat(), 'value': d[0]} for d in not_completed_task_data]
+#     print(completed_tasks)
+#     # Close the cursor and connection
+#     earliest_date = min([min(d[1] for d in completed_task_data), min(d[1] for d in not_completed_task_data)], default=None)
+#     latest_date = max([max(d[1] for d in completed_task_data), max(d[1] for d in not_completed_task_data)], default=None)
+
+#     if earliest_date and latest_date:
+#         # Directly use earliest_date and latest_date as datetime.date objects
+#         # start_date = datetime.combine(earliest_date, datetime.min.time())  # Combine date with minimum time to get a datetime object
+#         # end_date = datetime.combine(latest_date, datetime.max.time())  # Combine date with maximum time to get a datetime object
+#         # num_days = (end_date - start_date).days + 1
+#         # print('earliest_date: ',type(earliest_date), earliest_date)
+#         # # Generate a list of all dates between the earliest and latest dates
+#         # all_dates = [(start_date + timedelta(days=i)).isoformat() for i in range(num_days)]
+
+#         # Create empty lists for completed and not completed tasks
+#         # completed_tasks = [{'date': '', 'value': 0} for _ in all_dates]
+#         # not_completed_tasks = [{'date': '', 'value': 0} for _ in all_dates]
+#         dates_str =[]
+#         current_date = earliest_date
+#         # print(start_date,end_date)
+#         while current_date<=latest_date:
+#             dates_str.append(current_date.isoformat())
+#             current_date += timedelta(days=1)
+#         print("dates_str = ",dates_str)
+        
+        
+#         # Populate the lists with actual data
+#         # for d in completed_task_data:
+#         #     date_in_d = d[1].isoformat()  
+#         #     # for j in dates_str:
+#         #     #     print("J value =",j)
+#         #     #     if date_in_d==j:
+#         #     #         print("date in d : ",date_in_d,"------- date in j",j)
+#         #     #         final_data_list.append({'date': j, 'value': d[0]})
+#         #     #         break
+#         #     #     else:
+#         #     #         # If the date was not found, append a dictionary with value 0
+#         #     #         final_data_list.append({'date': j, 'value': 0})
+#         #     if date_in_d in dates_str:
+#         #         print(str(date_in_d))
+#         #         final_data_list.append({'date':str(date_in_d),'value':d[0]})
+#         complete_final_data_list = []
+
+# # Iterate through dates_str
+#         for date_str in dates_str:
+#             # Initialize a flag to False
+#             found = False
+#             # Try to find the date in completed_task_data
+#             for d in completed_task_data:
+#                 if d[1].isoformat() == date_str:
+#                     # If found, set the flag to True and store the value
+#                     found = True
+#                     value = d[0]
+#                     break  # Exit the loop since we found a match
+#             # After the loop, check the flag to decide what to append
+#             if found:
+#                 # If found, append the date and its value to final_data_list
+#                 complete_final_data_list.append({'date': date_str, 'value': value})
+#             else:
+#                 # If not found, append the date with a value of 0
+#                 complete_final_data_list.append({'date': date_str, 'value': 0})
+
+
+
+        
+                            
+        
+        
+        
+        
+#         not_complete_final_data_list = []
+
+# # Iterate through dates_str
+#         for date_str in dates_str:
+#             # Initialize a flag to False
+#             found = False
+#             # Try to find the date in completed_task_data
+#             for d in not_completed_task_data:
+#                 if d[1].isoformat() == date_str:
+#                     # If found, set the flag to True and store the value
+#                     found = True
+#                     value = d[0]
+#                     break  # Exit the loop since we found a match
+#             # After the loop, check the flag to decide what to append
+#             if found:
+#                 # If found, append the date and its value to final_data_list
+#                 not_complete_final_data_list.append({'date': date_str, 'value': value})
+#             else:
+#                 # If not found, append the date with a value of 0
+#                 not_complete_final_data_list.append({'date': date_str, 'value': 0})
+
+
+
+        
+                            
+#         print(not_complete_final_data_list)
+                    
+#             # if date_to_insert not in all_dates:  # Check if the date already exists
+#             #     continue  # Skip this iteration if the date is not in all_dates
+#             # index = all_dates.index(date_to_insert)
+#             # completed_tasks[index] = {'date': date_to_insert, 'value': d[0]}
+
+#         # for d in not_completed_task_data:
+#         #     date_to_insert = d[1].isoformat()  # Ensure consistency in format
+#         #     if date_to_insert not in all_dates:  # Check if the date already exists
+#         #         continue  # Skip this iteration if the date is not in all_dates
+#         #     index = all_dates.index(date_to_insert)
+#         #     not_completed_tasks[index] = {'date': date_to_insert, 'value': d[0]}
+#         # At this point, completed_tasks and not_completed_tasks contain all dates, filled with actual data where available
+#         # You can proceed to process these lists as needed
+#     else:
+#         # Handle cases where there are no dates available
+#         print("No dates available for processing.")
+
+#     # Remember to close the cursor and connection
+#     cursor.close()
+#     connection.close()
+    
+
+#     # Render the template with the data
+#     return render(request, 'dashboard.html', {'completed_tasks': json.dumps(complete_final_data_list), 'not_completed_tasks': json.dumps(not_complete_final_data_list)})
+
+
+
+
+
+
+
+@login_required
+def dashboard(request):
+    connection = mysql.connector.connect(
+                host="localhost",
+                user="root",
+                password="mmh13138",
+                database="learners"
+            )
+    cursor = connection.cursor()
+    user = str(request.user)
+
+    # Query for completed tasks
+    query_completed = '''SELECT COUNT(*) as completed_task_count, date,status
+                         FROM learners.timetable
+                         WHERE status = 'Completed' AND user_id = %s
+                         GROUP BY date
+                         ORDER BY date ASC;'''
+    cursor.execute(query_completed, (user,))
+    completed_task_data = cursor.fetchall()
+
+    # Query for not completed tasks
+    query_not_completed = '''SELECT COUNT(*) as completed_task_count, date,status
+                             FROM learners.timetable
+                             WHERE status = 'Not Done' AND user_id = %s
+                             GROUP BY date
+                             ORDER BY date ASC;'''
+    cursor.execute(query_not_completed, (user,))
+    not_completed_task_data = cursor.fetchall()
+
+    if completed_task_data and not_completed_task_data:
+    # Close the cursor and connection
+        earliest_date = min([min(d[1] for d in completed_task_data), min(d[1] for d in not_completed_task_data)], default=None)
+        latest_date = max([max(d[1] for d in completed_task_data), max(d[1] for d in not_completed_task_data)], default=None)
+
+        if earliest_date and latest_date:
+            # Directly use earliest_date and latest_date as datetime.date objects
+            # start_date = datetime.combine(earliest_date, datetime.min.time())  # Combine date with minimum time to get a datetime object
+            # end_date = datetime.combine(latest_date, datetime.max.time())  # Combine date with maximum time to get a datetime object
+            # num_days = (end_date - start_date).days + 1
+            # print('earliest_date: ',type(earliest_date), earliest_date)
+            # # Generate a list of all dates between the earliest and latest dates
+            # all_dates = [(start_date + timedelta(days=i)).isoformat() for i in range(num_days)]
+
+            # Create empty lists for completed and not completed tasks
+            # completed_tasks = [{'date': '', 'value': 0} for _ in all_dates]
+            # not_completed_tasks = [{'date': '', 'value': 0} for _ in all_dates]
+            dates_str =[]
+            current_date = earliest_date
+            # print(start_date,end_date)
+            while current_date<=latest_date:
+                dates_str.append(current_date.isoformat())
+                current_date += timedelta(days=1)
+            print("dates_str = ",dates_str)
+            
+            
+            # Populate the lists with actual data
+            # for d in completed_task_data:
+            #     date_in_d = d[1].isoformat()  
+            #     # for j in dates_str:
+            #     #     print("J value =",j)
+            #     #     if date_in_d==j:
+            #     #         print("date in d : ",date_in_d,"------- date in j",j)
+            #     #         final_data_list.append({'date': j, 'value': d[0]})
+            #     #         break
+            #     #     else:
+            #     #         # If the date was not found, append a dictionary with value 0
+            #     #         final_data_list.append({'date': j, 'value': 0})
+            #     if date_in_d in dates_str:
+            #         print(str(date_in_d))
+            #         final_data_list.append({'date':str(date_in_d),'value':d[0]})
+            complete_final_data_list = []
+
+    # Iterate through dates_str
+            for date_str in dates_str:
+                # Initialize a flag to False
+                found = False
+                # Try to find the date in completed_task_data
+                for d in completed_task_data:
+                    if d[1].isoformat() == date_str:
+                        # If found, set the flag to True and store the value
+                        found = True
+                        value = d[0]
+                        break  # Exit the loop since we found a match
+                # After the loop, check the flag to decide what to append
+                if found:
+                    # If found, append the date and its value to final_data_list
+                    complete_final_data_list.append({'date': date_str, 'value': value})
+                else:
+                    # If not found, append the date with a value of 0
+                    complete_final_data_list.append({'date': date_str, 'value': 0})
+
+
+
+            
+                                
+            
+            
+            
+            
+            not_complete_final_data_list = []
+
+    # Iterate through dates_str
+            for date_str in dates_str:
+                # Initialize a flag to False
+                found = False
+                # Try to find the date in completed_task_data
+                for d in not_completed_task_data:
+                    if d[1].isoformat() == date_str:
+                        # If found, set the flag to True and store the value
+                        found = True
+                        value = d[0]
+                        break  # Exit the loop since we found a match
+                # After the loop, check the flag to decide what to append
+                if found:
+                    # If found, append the date and its value to final_data_list
+                    not_complete_final_data_list.append({'date': date_str, 'value': value})
+                else:
+                    # If not found, append the date with a value of 0
+                    not_complete_final_data_list.append({'date': date_str, 'value': 0})
+
+
+
+            
+                                
+            print(not_complete_final_data_list)
+                        
+                # if date_to_insert not in all_dates:  # Check if the date already exists
+                #     continue  # Skip this iteration if the date is not in all_dates
+                # index = all_dates.index(date_to_insert)
+                # completed_tasks[index] = {'date': date_to_insert, 'value': d[0]}
+
+            # for d in not_completed_task_data:
+            #     date_to_insert = d[1].isoformat()  # Ensure consistency in format
+            #     if date_to_insert not in all_dates:  # Check if the date already exists
+            #         continue  # Skip this iteration if the date is not in all_dates
+            #     index = all_dates.index(date_to_insert)
+            #     not_completed_tasks[index] = {'date': date_to_insert, 'value': d[0]}
+            # At this point, completed_tasks and not_completed_tasks contain all dates, filled with actual data where available
+            # You can proceed to process these lists as needed
+        else:
+            # Handle cases where there are no dates available
+            print("No dates available for processing.")
+
+        # Remember to close the cursor and connection
+        cursor.close()
+        connection.close()
+        
+
+        # Render the template with the data
+        return render(request, 'dashboard.html', {'completed_tasks': json.dumps(complete_final_data_list), 'not_completed_tasks': json.dumps(not_complete_final_data_list)})
+    elif completed_task_data:
+        earliest_date = min(d[1] for d in completed_task_data)
+        latest_date = max(d[1] for d in completed_task_data)
+
+        if earliest_date and latest_date:
+            dates_str =[]
+            current_date = earliest_date
+            # print(start_date,end_date)
+            while current_date<=latest_date:
+                dates_str.append(current_date.isoformat())
+                current_date += timedelta(days=1)
+            print("dates_str = ",dates_str)
+            complete_final_data_list = []
+
+    # Iterate through dates_str
+            for date_str in dates_str:
+                # Initialize a flag to False
+                found = False
+                # Try to find the date in completed_task_data
+                for d in completed_task_data:
+                    if d[1].isoformat() == date_str:
+                        # If found, set the flag to True and store the value
+                        found = True
+                        value = d[0]
+                        break  # Exit the loop since we found a match
+                # After the loop, check the flag to decide what to append
+                if found:
+                    # If found, append the date and its value to final_data_list
+                    complete_final_data_list.append({'date': date_str, 'value': value})
+                else:
+                    # If not found, append the date with a value of 0
+                    complete_final_data_list.append({'date': date_str, 'value': 0})
+
+            not_complete_final_data_list=[{'date':'', "value":0}]
+            
+        else:
+            # Handle cases where there are no dates available
+            print("No dates available for processing.")
+
+        # Remember to close the cursor and connection
+        cursor.close()
+        connection.close()
+        
+
+        # Render the template with the data
+        return render(request, 'dashboard.html', {'completed_tasks': json.dumps(complete_final_data_list), 'not_completed_tasks': json.dumps(not_complete_final_data_list)})
+    elif not_completed_task_data:
+        earliest_date = min(d[1] for d in not_completed_task_data)
+        latest_date = max(d[1] for d in not_completed_task_data)
+
+        if earliest_date and latest_date:
+            dates_str =[]
+            current_date = earliest_date
+            # print(start_date,end_date)
+            while current_date<=latest_date:
+                dates_str.append(current_date.isoformat())
+                current_date += timedelta(days=1)
+            print("dates_str = ",dates_str)
+            not_complete_final_data_list = []
+
+    # Iterate through dates_str
+            for date_str in dates_str:
+                # Initialize a flag to False
+                found = False
+                # Try to find the date in completed_task_data
+                for d in not_completed_task_data:
+                    if d[1].isoformat() == date_str:
+                        # If found, set the flag to True and store the value
+                        found = True
+                        value = d[0]
+                        break  # Exit the loop since we found a match
+                # After the loop, check the flag to decide what to append
+                if found:
+                    # If found, append the date and its value to final_data_list
+                    not_complete_final_data_list.append({'date': date_str, 'value': value})
+                else:
+                    # If not found, append the date with a value of 0
+                    not_complete_final_data_list.append({'date': date_str, 'value': 0})
+
+            complete_final_data_list=[{'date':'', 'value':0}]
+            
+        else:
+            # Handle cases where there are no dates available
+            print("No dates available for processing.")
+
+        # Remember to close the cursor and connection
+        cursor.close()
+        connection.close()
+        
+
+        # Render the template with the data
+        return render(request, 'dashboard.html', {'completed_tasks': json.dumps(complete_final_data_list), 'not_completed_tasks': json.dumps(not_complete_final_data_list)})
+    else:
+        complete_final_data_list=[{'date':'', 'value':0}]
+        not_complete_final_data_list=[{'date':'', 'value':0}]
+        
+        return render(request, 'dashboard.html', {'completed_tasks': json.dumps(complete_final_data_list), 'not_completed_tasks': json.dumps(not_complete_final_data_list)})
+        
+
+

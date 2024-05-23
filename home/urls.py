@@ -11,7 +11,7 @@ urlpatterns = [
     path('home/', views.index, name="Home"), # Root URL
     path('about/', views.about, name="About"),
     path('services/', views.services, name="Services"),
-    path('dashboard/', views.dash, name="Dashboard"),
+    path('dashboard/', views.dashboard, name="Dashboard"),
     path('contact/', views.contact, name="Contact"),
     path('pomodoro/', views.pomodoro, name="Pomodoro"),
     path('register/', v.register, name="register"),
@@ -49,4 +49,12 @@ urlpatterns = [
     # path('ws/user/<str:user_id>/', NotificationConsumer.as_asgi()),
     path('inbox/notifications/', include('notifications.urls', namespace='notifications')),
      path('mark_notification_as_read/<int:notification_id>/', views.mark_notification_as_read, name='mark_notification_as_read'),
+     
+     
+     path('chatbot/', views.react_app, name='react_app'),
 ]
+
+from django.conf import settings
+from django.conf.urls.static import static
+
+urlpatterns+=static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

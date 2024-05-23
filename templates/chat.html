@@ -1,3 +1,6 @@
+{% extends "base.html" %}
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,8 +9,63 @@
     <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
     <title>Document</title>
     <style>
+        {% block style %}
+        .button-30 {
+            align-items: center;
+            appearance: none;
+            background-color: #FCFCFD;
+            border-radius: 4px;
+            border-width: 0;
+            box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px,rgba(45, 35, 66, 0.3) 0 7px 13px -3px,#D6D6E7 0 -3px 0 inset;
+            box-sizing: border-box;
+            color: #36395A;
+            cursor: pointer;
+            display: inline-flex;
+            font-family: "JetBrains Mono",monospace;
+            height: 48px;
+            justify-content: center;
+            line-height: 1;
+            list-style: none;
+            overflow: hidden;
+            padding-left: 16px;
+            padding-right: 16px;
+            position: relative;
+            text-align: left;
+            text-decoration: none;
+            transition: box-shadow .15s,transform .15s;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            white-space: nowrap;
+            will-change: box-shadow,transform;
+            font-size: 18px;
+          }
+          
+          .button-30:focus {
+            box-shadow: #D6D6E7 0 0 0 1.5px inset, rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+          }
+          
+          .button-30:hover {
+            box-shadow: rgba(45, 35, 66, 0.4) 0 4px 8px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+            transform: translateY(-2px);
+          }
+          
+          .button-30:active {
+            box-shadow: #D6D6E7 0 3px 7px inset;
+            transform: translateY(2px);
+          }
+
+          .parent{
+            display: flex; 
+            flex-direction: row; 
+            align-items: center; 
+            justify-content: center;
+            padding:10px;
+
+          }
+          {% endblock style %}
         
-        .btn {
+        {% comment %} .btn {
  position: relative;
  display: flex;
  overflow: hidden;
@@ -50,28 +108,31 @@
 
 .btn:hover svg {
  opacity: 1;
-}
+} {% endcomment %}
 
 
     </style>
 </head>
 <body>
-    <div class = "parent"> 
+    {%block body%}
+    <div class = "parent container-fluid"> 
         <div class = "main"> 
-        <h1 >Gemini Chat</h1>
+        <h1 style = "margin: 10px 20px 15px 25px;">Gemini Chat</h1>
       <form action="/gemini/" method="post" >
           {% csrf_token %}
-          <input style:border-radius:20% type="text" name="message" placeholder="Type your message here" required>
-          <button class="btn" type="submit"><span>Send</span></button>
+          <input style="border-radius:20%; margin: 10px 20px 15px 25px;" type="text" name="message" placeholder="Type your message here" required>
+          {% comment %} <button class="btn" type="submit"><span>Send</span></button> {% endcomment %}
+          <button class="button-30" role="button" type="submit">Send</button>
         </form>
+        
+
         
         <form action = "/chat_delete/" method= "post">
           {% csrf_token %}
-          <button class="btn" type="submit"><span>Delete</span></button>
-
+          <button class="button-30" role="button" type="submit">Delete all</button>
           </form>
           {% if response_text %}
-      <div class="chat-history">
+      <div class="chat-history container container-fluid" style = " margin: 10px 20px 15px 25px;">
         {% for chat in chat_data %}
             <div class="message">
                 <p><strong>You:</strong> {{ chat.0 }}</p> <!-- User message -->
@@ -81,5 +142,7 @@
     </div>
           {% endif %}
       </div>
+      {% endblock body %}
+
 </body>
 </html>
