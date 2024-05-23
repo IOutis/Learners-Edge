@@ -861,6 +861,18 @@ def react_app(request):
 
 
 
+from datetime import date as dt
+
+
+#to display from earliest to latest then change this part
+#            current_date = earliest_date
+#            today_ = dt.today()
+#            # print('today =',today_, 'type: ',type(today_),' current_date=',type(current_date))
+#            # print(start_date,end_date)
+#            while current_date<=today_:
+# while condition to latest_date
+
+
 
 
 @login_required
@@ -911,8 +923,10 @@ def dashboard(request):
             # not_completed_tasks = [{'date': '', 'value': 0} for _ in all_dates]
             dates_str =[]
             current_date = earliest_date
+            today_ = dt.today()
+            # print('today =',today_, 'type: ',type(today_),' current_date=',type(current_date))
             # print(start_date,end_date)
-            while current_date<=latest_date:
+            while current_date<=today_:
                 dates_str.append(current_date.isoformat())
                 current_date += timedelta(days=1)
             print("dates_str = ",dates_str)
@@ -1020,8 +1034,10 @@ def dashboard(request):
         if earliest_date and latest_date:
             dates_str =[]
             current_date = earliest_date
+            today_ = dt.today()
+            # print('today =',today_, 'type: ',type(today_),' current_date=',type(current_date))
             # print(start_date,end_date)
-            while current_date<=latest_date:
+            while current_date<=today_:
                 dates_str.append(current_date.isoformat())
                 current_date += timedelta(days=1)
             print("dates_str = ",dates_str)
@@ -1066,8 +1082,10 @@ def dashboard(request):
         if earliest_date and latest_date:
             dates_str =[]
             current_date = earliest_date
+            today_ = dt.today()
+            # print('today =',today_, 'type: ',type(today_),' current_date=',type(current_date))
             # print(start_date,end_date)
-            while current_date<=latest_date:
+            while current_date<=today_:
                 dates_str.append(current_date.isoformat())
                 current_date += timedelta(days=1)
             print("dates_str = ",dates_str)
