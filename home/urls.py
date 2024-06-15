@@ -5,6 +5,7 @@ from register import views as v
 from django.contrib.auth import views as auth_views
 # from notifications_app.consumers import NotificationConsumer
 import notifications.urls
+from notes import views as notes_views
 
 urlpatterns = [
     path('', views.index, name="Home"), # Root URL
@@ -17,7 +18,8 @@ urlpatterns = [
     path('register/', v.register, name="register"),
     path('timetable/', views.timetable, name="TimeTable"),
     path("save/", views.save, name="SaveTask"),
-    path("get/", views.gettable, name="GetTimetable"),
+    path("notes/", views.notes, name="Notes"),
+    path("get/", views.get_in_progress, name="GetTimetable"),
     path("get_notdone/", views.getnotdone, name="GetTimetable"),
     path("get_done/", views.getcompleted, name="GetTimetable"),
     path("delete_all/", views.delete_all, name="DeleteAllTasks"),
@@ -52,9 +54,17 @@ urlpatterns = [
      
      
      path('chatbot/', views.react_app, name='react_app'),
+     
+    
+     
+     path('new_notes/', views.create_note, name='create_note'),
+     path('note_detail/<int:note_id>/', views.note_detail, name='note_detail'),
+     path('delete-note/<int:note_id>/', views.delete_note, name='delete_note'),
+
 ]
 
 from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns+=static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -37,6 +37,7 @@
 </form>
 </div>
 <div id ="table_buttons" class="container-fluid">
+    <div id = "get_data" style="width: fit-content;">
 <form action="/get/" method="post">
     {% csrf_token %}
       <button class="button-30" role="button" type="submit">Get Planned or In progress tasks</button>
@@ -50,8 +51,9 @@
     {% csrf_token %}
     <button class="button-30" role="button" type="submit">Get Completed tasks</button>
 </form>
+</div>
 
-
+<div class="rest_buttons" style="width: fit-content; position: inherit;right:6px;" >
 <form action="/delete_all/" method="post">
     {% csrf_token %}
     <button class="button-30" role="button" type="submit">Delete all</button>
@@ -59,7 +61,7 @@
 <form action="/return/" method="post">
     {% csrf_token %}
     <button class="button-30" role="button" type="submit">Return to form</button>
-</form>
+</form></div>
 </div>
     {# Display the data if it exists #}
     {% if timetable_data %}
@@ -102,9 +104,11 @@
         
         
             {% csrf_token %}
-              <button class="button-30" role="button" type="submit" name ="delete_button" value="delete">Delete Selected Tasks</button>
-              <button class="button-30" role="button" type="submit" name ="complete_button" value="complete">Mark as 'Complete'</button>
-              <button class="button-30" role="button" type="submit" name ="progress_button" value="progress">Mark as 'In progress'</button>
+               <div class="button-group">
+                    <button class="button-30" type="submit" name="delete_button" value="delete">Delete Selected Tasks</button>
+                    <button class="button-30" type="submit" name="complete_button" value="complete">Mark as 'Complete'</button>
+                    <button class="button-30" type="submit" name="progress_button" value="progress">Mark as 'In Progress'</button>
+                </div>
         
         </form>
         <audio id="alarmSound" src="{% static 'js/audio.mp3' %}" preload="auto"></audio>

@@ -300,6 +300,50 @@ def getcompleted(request):
     data = get_completed_data(user_id)
     return render(request,'timetable.html',data)
 
+def get_inprogress_data(user_id):
+    connection = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="mmh13138",
+        database="learners"
+    )
+    print(user_id)
+    cursor = connection.cursor()
+    query = "SELECT * FROM timetable WHERE (user_id = %s and status = 'In Progress') OR (user_id = %s and status = 'Planned') ORDER BY date, time_slot"
+
+    cursor.execute(query,(user_id,user_id))
+    fetched_data = cursor.fetchall()
+
+    # Close the cursor and connection
+    cursor.close()
+    connection.close()
+
+    # Process the fetched data and populate the timetable_data list
+    timetable_data = []
+    for row in fetched_data:
+        date_obj = datetime.strptime(str(row[9]), '%Y-%m-%d')
+    # Derive the day of the week from the datetime object
+        day_of_week = date_obj.strftime('%A')
+        timetable_data.append({
+            'id':row[0],
+            'day_of_week': day_of_week,
+            'time_slot': row[2],
+            'task_activity': row[3],
+            'description': row[4],
+            'status': row[5],
+            'recurring': 'Recurring' if row[6]==1 else 'Not recurring',
+            'date':row[9],
+        })
+
+    # Pass the data to the template
+    data = {'timetable_data': timetable_data}
+    return data
+
+def get_in_progress(request):
+    user_id = request.user.username
+    data = get_inprogress_data(user_id)
+    return render(request, 'timetable.html', data)
+
 
 
 def delete_all(request):
@@ -621,7 +665,7 @@ def testing(request,notification_id):
     notification = Notification.objects.get(id=notification_id)
     notification.mark_as_read()
     notification.delete()
-    return redirect('/get/')
+    return redirect('/get_notdone/')
 
 
 
@@ -1131,3 +1175,126 @@ def dashboard(request):
         
 
 
+
+
+def notes(request):
+    return render(request,'notes.html')
+
+
+
+from notes.models import Note
+from bson.json_util import dumps
+from django.views.decorators.csrf import csrf_exempt
+from django.core.files.storage import default_storage
+import uuid
+from django.http import HttpResponseBadRequest
+
+@csrf_exempt
+def save_notes(request):
+    if request.method == 'POST':
+        content = request.POST.get('content')
+        user = request.user
+        
+        # Save text content
+        note = Note(user=user, content=content)
+        note.save()
+
+        # Assuming you have a way to get the uploaded image(s) from the request
+        # This part is highly dependent on how you're handling file uploads
+        # For simplicity, let's assume you're uploading a single image per note
+        image_file = request.FILES.get('image')
+        if image_file:
+            filename = f"{uuid.uuid4()}.jpg"
+            with default_storage.open(filename, "wb") as f:
+                f.write(image_file.read())
+
+            # Save the image URL to the note
+            note.image_url = filename
+            note.save()
+
+        return redirect('/notes/')
+    else:
+        return HttpResponseBadRequest("Invalid request")
+    
+    
+    
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.core.files.storage import default_storage
+import uuid
+
+@csrf_exempt
+def upload_image(request):
+    if request.is_ajax():
+        form = request.FILES.get('file')
+        if form:
+            filename = f"uploads/{uuid.uuid4()}.{form.name.split('.')[-1]}"
+            with default_storage.open(filename, 'wb+') as dest:
+                dest.write(form.read())
+            return JsonResponse({'location': request.build_absolute_uri(filename)})
+    return JsonResponse({}, status=401)
+
+
+
+from django.shortcuts import render, redirect
+from.forms import NoteForm
+from notes.models import Note,Article
+import os
+
+import sqlite3
+
+
+@login_required
+def create_note(request):
+
+    
+    if request.method == 'POST':
+        form = NoteForm(request.POST, request.FILES)
+        if form.is_valid():
+            note = form.save(commit=False)
+            if request.FILES.get('image'):
+                filename = request.FILES['image'].name
+                filepath = os.path.join('media/images/', filename)
+                with open(filepath, 'wb+') as destination:
+                    for chunk in request.FILES['image'].chunks():
+                        destination.write(chunk)
+                note.image_path = filepath
+                
+            note.user = request.user
+            note.save()
+            print("IN IF")
+            notes = Article.objects.all()
+            notes_data = list(n for n in notes)
+            return redirect('/new_notes/', {'notes':notes_data})
+    else:
+        form = NoteForm()
+        print("In else: ")
+    print(request.method)
+    print("Notes data:")
+    user_id = request.user.id
+    notes = Article.objects.filter(user_id=user_id)
+    for note in notes:
+        print(note.title)
+        print(note.user_id)
+        
+    return render(request, 'notes.html', {'form': form,'notes':notes})
+
+
+
+# views.py
+from django.shortcuts import get_object_or_404, render
+from notes.models import Article  
+def note_detail(request, note_id):
+    note = get_object_or_404(Article, pk=note_id)
+    return render(request, 'note_detail.html', {'note': note,'MEDIA_URL': settings.MEDIA_URL})
+
+
+def delete_confirm(request):
+    return render(request, 'delete_confirmation.html')
+@login_required
+def delete_note(request, note_id):
+    note = get_object_or_404(Article, pk=note_id)
+    if request.method == 'POST':
+        note.delete()
+        return redirect('/new_notes/')  
+    return render(request, 'delete_confirmation.html', {'note': note})

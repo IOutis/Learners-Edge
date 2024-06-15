@@ -46,3 +46,20 @@ class TimetableForm(forms.Form):
             raise ValidationError("Time cannot be before the current time.")
 
         return cleaned_data
+    
+    
+    
+    
+    
+    
+from django import forms
+from notes.models import Article
+from django.contrib.auth.models import User  
+
+class NoteForm(forms.ModelForm):
+    class Meta:
+        model = Article
+        fields = ['title', 'text', 'image'] 
+
+
+

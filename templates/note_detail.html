@@ -1,0 +1,21 @@
+{%extends 'base.html'%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {%block body%}
+    <h1>Note Details</h1>
+    <div style="display: flex; flex-direction:column; justify-content:center; align-items:center;">
+        <h2>{{ note.title }}</h2>
+        <p>{{ note.text }}</p>
+        <img src="{{ MEDIA_URL }}{{ note.image }}" alt="Article Image" width="200px;">
+        <a href="{% url 'delete_note' note.id %}"><button class="button-30 btn-outline-danger">Delete Note</button></a>
+    </div>
+    {%endblock body%}
+    
+</body>
+</html>

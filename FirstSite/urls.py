@@ -26,5 +26,6 @@ urlpatterns = [
     path('',include('home.urls')),
     path('accounts/', include('home.urls')),
      path('inbox/notifications/', include('notifications.urls', namespace='notifications')),
-    
+     path('tinymce/', include('tinymce.urls')),
+     path("ckeditor5/", include('django_ckeditor_5.urls')),
 ]

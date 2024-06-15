@@ -1,11 +1,8 @@
 {% extends "base.html" %}
 {% load static %}
-{% block body %}
-<h1>Welcome to Student Synergy</h1><br>
-<div class="rectangle"> 
-  
-</div>{% endblock body %}
-
+{% block head%}
+<script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js"></script>
+{%endblock head %}
 {% block style%}
   .rectangle {
     width: 500px;
@@ -15,16 +12,32 @@
     border-radius: 10px;  
     box-shadow: 0px 0px 20px 10px rgba(0,0,0,0.3);
     position: fixed;left: 520px; top: 300px; 
-  }
+    }
+  {% endblock style %}
+{% block body %}
+<div id="typed-text" style=" font-size: 2rem;font-family: monospace; font-weight: 800; display:flex; flex-direction:row; justify-content:center; align-items:center;"></div>
+<div class="rectangle container-fluid"> 
+    <div class="row justify-content-center">
+      
+</div>
+  <script>
+  
+    var typed = new Typed('#typed-text', {
+      strings: ["Welcome to Student Synergy"],
+      typeSpeed: 40,
+      backSpeed: 10,
+      loop: true
+   });
+  </script>
+  {% endblock body %}
   <audio id="alarmSound" src="{% static 'js/audio.mp3' %}" preload="auto"></audio>
-       <script src = "{% static 'js/timer.js' %}"></script>
-       
-        
+  <script src = "{% static 'js/timer.js' %}"></script>
+  
+  
   {% comment %} body{
     background-color= #1b263b;
   }; {% endcomment %}
   <script src = {% static 'js/timer.js' %};>
     timer_run();
   </script>
-{% endblock style %}
 
