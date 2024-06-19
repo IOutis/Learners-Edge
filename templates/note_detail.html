@@ -1,21 +1,60 @@
-{%extends 'base.html'%}
+{% extends 'base.html' %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Note Details</title>
+    {% block head %}
+    {{ form.media }}
+    {% endblock head %}
 </head>
 <body>
-    {%block body%}
+    {% block body %}
     <h1>Note Details</h1>
     <div style="display: flex; flex-direction:column; justify-content:center; align-items:center;">
         <h2>{{ note.title }}</h2>
-        <p>{{ note.text }}</p>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="button-30 btn-outline-primary">Save Note</button>
+        </form>
+        {% if note.image %}
         <img src="{{ MEDIA_URL }}{{ note.image }}" alt="Article Image" width="200px;">
+        {% endif %}
         <a href="{% url 'delete_note' note.id %}"><button class="button-30 btn-outline-danger">Delete Note</button></a>
     </div>
-    {%endblock body%}
-    
+    {% endblock body %}
 </body>
 </html>
+
+
+
+{% comment %} <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Note Details</title>
+    {% block head %}
+    {{ form.media }}
+    {% endblock head %}
+</head>
+<body>
+    {% block body %}
+    <h1>Note Details</h1>
+    <div style="display: flex; flex-direction:column; justify-content:center; align-items:center;">
+        <h2>{{ note.title }}</h2>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="button-30 btn-outline-primary">Save Note</button>
+        </form>
+        {% if note.image %}
+        <img src="{{ MEDIA_URL }}{{ note.image }}" alt="Article Image" width="200px;">
+        {% endif %}
+        <a href="{% url 'delete_note' note.id %}"><button class="button-30 btn-outline-danger">Delete Note</button></a>
+    </div>
+    {% endblock body %}
+</body>
+</html> {% endcomment %}

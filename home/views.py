@@ -1246,38 +1246,28 @@ import sqlite3
 
 @login_required
 def create_note(request):
-
-    
     if request.method == 'POST':
         form = NoteForm(request.POST, request.FILES)
         if form.is_valid():
             note = form.save(commit=False)
-            if request.FILES.get('image'):
-                filename = request.FILES['image'].name
-                filepath = os.path.join('media/images/', filename)
-                with open(filepath, 'wb+') as destination:
-                    for chunk in request.FILES['image'].chunks():
-                        destination.write(chunk)
-                note.image_path = filepath
-                
             note.user = request.user
             note.save()
-            print("IN IF")
-            notes = Article.objects.all()
-            notes_data = list(n for n in notes)
-            return redirect('/new_notes/', {'notes':notes_data})
+            print("Note saved successfully.")
+            # Redirect to a success page or wherever you want to go after saving
+            # return redirect('/new_notes/')
     else:
         form = NoteForm()
-        print("In else: ")
-    print(request.method)
-    print("Notes data:")
+
+    print("Request method:", request.method)
+
+    # Fetch and print notes for the current user
     user_id = request.user.id
     notes = Article.objects.filter(user_id=user_id)
     for note in notes:
         print(note.title)
         print(note.user_id)
-        
-    return render(request, 'notes.html', {'form': form,'notes':notes})
+
+    return render(request, 'notes.html', {'form': form, 'notes': notes})
 
 
 
@@ -1285,8 +1275,16 @@ def create_note(request):
 from django.shortcuts import get_object_or_404, render
 from notes.models import Article  
 def note_detail(request, note_id):
-    note = get_object_or_404(Article, pk=note_id)
-    return render(request, 'note_detail.html', {'note': note,'MEDIA_URL': settings.MEDIA_URL})
+    note = get_object_or_404(Article, id=note_id)
+    if request.method == 'POST':
+        form = NoteForm(request.POST, request.FILES, instance=note)
+        if form.is_valid():
+            form.save()
+            return redirect('note_detail', note_id=note.id)
+    else:
+        form = NoteForm(instance=note)
+    
+    return render(request, 'note_detail.html', {'form': form, 'note': note})
 
 
 def delete_confirm(request):

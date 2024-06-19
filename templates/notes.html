@@ -1,132 +1,116 @@
 {% extends "base.html" %}
-{% load static%}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    {%block head%}
-    {%endblock head%}
-    </head>
-    <style>
-    {% block style %}
-        .button-30 {
-            align-items: center;
-            appearance: none;
-            background-color: #FCFCFD;
-            border-radius: 4px;
-            border-width: 0;
-            box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
-            box-sizing: border-box;
-            color: #36395A;
-            cursor: pointer;
-            display: inline-flex;
-            font-family: "JetBrains Mono", monospace;
-            height: 48px;
-            justify-content: center;
-            line-height: 1;
-            list-style: none;
-            overflow: hidden;
-            padding-left: 16px;
-            padding-right: 16px;
-            position: relative;
-            text-align: left;
-            text-decoration: none;
-            transition: box-shadow .15s, transform .15s;
-            user-select: none;
-            -webkit-user-select: none;
-            touch-action: manipulation;
-            white-space: nowrap;
-            will-change: box-shadow, transform;
-            font-size: 18px;
-            margin: 5px; 
-        }
-        
-        .button-30:focus {
-            box-shadow: #D6D6E7 0 0 0 1.5px inset, rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
-        }
-        
-        .button-30:hover {
-            box-shadow: rgba(45, 35, 66, 0.4) 0 4px 8px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
-            transform: translateY(-2px);
-        }
-        
-        .button-30:active {
-            box-shadow: #D6D6E7 0 3px 7px inset;
-            transform: translateY(2px);
-        }
-        
-        .parent {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: center;
-            padding: 10px;
-        }
-        .prev_notes{
-            position: absolute;
-            top:10%;
-            left:6px;
-            margin-left:6px;
-            
-            width:250px;
-            height:800px;
-        }
-        .current_note{
-            position: absolute;
-            top:10%;
-            left:270px;
-            margin-left:6px;
-            width:1180px;
-            height:700px;
-        }
-        
-    {% endblock style%}
-    </style>
+    {% block head %}
+    {{ form.media }} <!-- Ensure this is not commented out -->
+    {% endblock head %}
+</head>
+<style>
+{% block style %}
+    .button-30 {
+        align-items: center;
+        appearance: none;
+        background-color: #FCFCFD;
+        border-radius: 4px;
+        border-width: 0;
+        box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+        box-sizing: border-box;
+        color: #36395A;
+        cursor: pointer;
+        display: inline-flex;
+        font-family: "JetBrains Mono", monospace;
+        height: 48px;
+        justify-content: center;
+        line-height: 1;
+        list-style: none;
+        overflow: hidden;
+        padding-left: 16px;
+        padding-right: 16px;
+        position: relative;
+        text-align: left;
+        text-decoration: none;
+        transition: box-shadow .15s, transform .15s;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+        white-space: nowrap;
+        will-change: box-shadow, transform;
+        font-size: 18px;
+        margin: 5px; 
+    }
+    
+    .button-30:focus {
+        box-shadow: #D6D6E7 0 0 0 1.5px inset, rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+    }
+    
+    .button-30:hover {
+        box-shadow: rgba(45, 35, 66, 0.4) 0 4px 8px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+        transform: translateY(-2px);
+    }
+    
+    .button-30:active {
+        box-shadow: #D6D6E7 0 3px 7px inset;
+        transform: translateY(2px);
+    }
+    
+    .parent {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        padding: 10px;
+    }
+    .prev_notes {
+        position: absolute;
+        top: 10%;
+        left: 6px;
+        margin-left: 6px;
+        width: 250px;
+        height: 800px;
+    }
+    .current_note {
+        position: absolute;
+        top: 10%;
+        left: 270px;
+        margin-left: 6px;
+        width: 1180px;
+        height: 700px;
+    }
+{% endblock style %}
+</style>
 <body>
     {% block body %}
     <div class="prev_notes">
         <h2>Note History</h2>
         <ul>
-            <p>{{notes.title}}</p>
-            {% if notes%}
+            <p>{{ notes.title }}</p>
+            {% if notes %}
             {% for note in notes %}
-            <li href="/note_detail/1/">
+            <li>
                 <strong>{{ note.title }}</strong><br>
                 {{ note.text|truncatechars:50 }}...<br>
                 <a href="{% url 'note_detail' note.id %}">View</a>
-                
             </li>
-            
             {% endfor %}
-            {%else%}
+            {% else %}
             <p>No notes found.</p>
             {% endif %}
         </ul>
     </div>
     <div class="current_note">
         <h2>Create a New Note</h2>
-  <form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    
-
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
             <button class="button-30">Save Note</button>
-        </form></div>
-        
-        <!-- Correct usage -->
-
-        {% endblock body %}
-
-    
-    <script>
-        
-    </script>
+        </form>
+    </div>
+   
+    {% endblock body %}
 </body>
 </html>
-
-{% comment %} templates: [
-        { title: 'Test template 1', content: 'Test 1' },
-        { title: 'Test template 2', content: 'Test 2' }
-      ], {% endcomment %}

@@ -54,12 +54,14 @@ class TimetableForm(forms.Form):
     
 from django import forms
 from notes.models import Article
+from django_ckeditor_5.widgets import CKEditor5Widget
 from django.contrib.auth.models import User  
 
 class NoteForm(forms.ModelForm):
+    text = CKEditor5Widget(config_name='extends') 
     class Meta:
         model = Article
-        fields = ['title', 'text', 'image'] 
+        fields = ['title', 'text'] 
 
 
 

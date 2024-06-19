@@ -6,6 +6,7 @@ from django.contrib.auth import views as auth_views
 # from notifications_app.consumers import NotificationConsumer
 import notifications.urls
 from notes import views as notes_views
+import django_ckeditor_5.views as ck_views
 
 urlpatterns = [
     path('', views.index, name="Home"), # Root URL
@@ -56,7 +57,8 @@ urlpatterns = [
      path('chatbot/', views.react_app, name='react_app'),
      
     
-     
+     path("ckeditor5/", include('django_ckeditor_5.urls')),
+     path('ckeditor5/image_upload/', ck_views.upload_file, name="ck_editor_5_upload_file"),
      path('new_notes/', views.create_note, name='create_note'),
      path('note_detail/<int:note_id>/', views.note_detail, name='note_detail'),
      path('delete-note/<int:note_id>/', views.delete_note, name='delete_note'),

@@ -59,8 +59,9 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'rest_framework',
     'corsheaders',
-    "tinymce",
+    # "tinymce",
     'django_ckeditor_5',
+    # 'ckeditor',
 
 ]
 
@@ -243,14 +244,18 @@ CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 
 
 
-MEDIA_URL = '/media/'
+MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 
 #ckeditor config
+CKEDITOR_FILE_BROWSER_URL = '/ckeditor5/browse/'
+CKEDITOR_5_ALLOW_ALL_FILE_TYPES = True
+CKEDITOR_5_UPLOAD_FILE_TYPES = ['jpeg', 'pdf', 'png']
 CKEDITOR_UPLOAD_PATH = "uploads/"
+CKEDITOR_5_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
 STATIC_URL = '/static/'
-MEDIA_URL = '/media/'
+MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 customColorPalette = [
@@ -284,7 +289,9 @@ customColorPalette = [
 CKEDITOR_5_CONFIGS = {
     'default': {
         'toolbar': ['heading', '|', 'bold', 'italic', 'link',
-                    'bulletedList', 'numberedList', 'blockQuote', 'imageUpload', ],
+                    'bulletedList', 'numberedList', 'blockQuote', 'imageUpload', 'fileUpload',],
+        'extraPlugins': 'codesnippet,underline,strike,code,subscript,superscript,highlight,codeBlock,sourceEditing,todoList,fontSize,fontFamily,fontColor,fontBackgroundColor,removeFormat,insertTable,uploadimage',
+        
 
     },
     'extends': {

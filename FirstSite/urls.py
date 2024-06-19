@@ -20,12 +20,15 @@ from  .import views
 from django.http import HttpResponse
 from register import views as v
 from django.utils import timezone
+import django_ckeditor_5.views as ck_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('home.urls')),
     path('accounts/', include('home.urls')),
      path('inbox/notifications/', include('notifications.urls', namespace='notifications')),
-     path('tinymce/', include('tinymce.urls')),
+    #  path('tinymce/', include('tinymce.urls')),
      path("ckeditor5/", include('django_ckeditor_5.urls')),
+     path("/ckeditor5/image_upload/", ck_views.upload_file),
+     
 ]

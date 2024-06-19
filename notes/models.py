@@ -13,8 +13,7 @@ from django.conf import settings
 
 
 class Article(models.Model):
-    title = models.CharField('Title', max_length=200)
-    text = CKEditor5Field('Text', config_name='extends')
-    image = models.ImageField(upload_to='images/', blank=True, null=True)
+    title = models.CharField('Title', max_length=200,unique=True)
+    text = CKEditor5Field('Content', config_name='extends',null=True, blank=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='notes',default=None)
 
