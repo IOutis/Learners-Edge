@@ -61,10 +61,7 @@
     
   }
   
-  #timer {
-    font-size: 48px;
-    margin-top: 50px;
-  }
+  
   
   #controls {
     display: flex;
@@ -87,12 +84,12 @@
     text-align: center;
   }
   
-  #startButton, #pauseButton, #resetButton {
+  .startButton, .pauseButton, .resetButton {
     transition: transform 0.2s ease-in-out;
     margin: 0 10px; /* Adding some margin to space the buttons */
   }
   
-  #startButton:active, #pauseButton:active {
+  .startButton:active, .pauseButton:active {
     animation: butt 0.17s linear;
   }
   
