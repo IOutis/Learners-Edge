@@ -1,8 +1,8 @@
-# Student Synergy (MVP)
+# Learner's Edge (MVP)
 
-**Student Synergy** is a platform designed to enhance student productivity and collaboration. It enables students to connect based on shared goals, collaborate on projects, and stay organized through task tracking and automated reminders.
+**Learner's Edge** is a platform designed to enhance student productivity and collaboration. It enables students to connect based on shared goals, collaborate on projects, and stay organized through task tracking and automated reminders.
 
-> 🔧 Built with: Django • Django REST Framework • Celery • Celery Beat • PostgreSQL
+> 🔧 Built with: Django • Django REST Framework • Celery • Celery Beat • SQlite3
 
 ---
 
